@@ -10,19 +10,26 @@ function Reg() {
 
     async function handleSubmit(e){
         e.preventDefault();
-        // axios.post('http://localhost:8080/register',{email: email}).then(res => {
-        //     console.log(res.data);
-        // })
 
+        let respObj = {};
+        respObj.name = name;
+        respObj.email = email;
+        respObj.username = username;
 
         // GET registration options from the endpoint that calls
         // @simplewebauthn/server -> generateRegistrationOptions()
-        const resp = await fetch('http://localhost:3000/register');
+        const resp = await fetch('http://localhost:3000/pre_register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(respObj),
+        });
 
         let attResp;
         try {
             // Pass the options to the authenticator and wait for a response
-            attResp = await startRegistration(await resp.json());
+            respObj.attResp = await startRegistration(await resp.json());
         } catch (error) {
             // Some basic error handling
             if (error.name === 'InvalidStateError') {
@@ -42,7 +49,7 @@ function Reg() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(attResp),
+            body: JSON.stringify(respObj),
         });
 
         // Wait for the results of verification

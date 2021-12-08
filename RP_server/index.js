@@ -1,9 +1,21 @@
 const express = require('express');
 const cors = require('cors');
-const {GetAuth} = require('./GetAuthController');
-const {PostAuth} = require('./PostAuthController');
-const {GetRegistration} = require('./GetRegistrationController');
-const {PostRegistration} = require('./PostRegistrationController');
+
+const{
+    PostRegistration,
+    PostPreRegistration,
+    PostAuthentication,
+    PostPreAuthentication
+} = require("./controllers");
+
+// const {PostRegistration} = require('./PostRegistrationController');
+// const {PostPreRegistration} = require('./PostPreRegistrationController');
+// const {PostAuthentication} = require('./PostAuthenticationController');
+// const {PostPreAuthentication} = require('./PostPreAuthenticationController');
+
+const mongoose = require('mongoose');
+
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,21 +24,21 @@ const PORT = process.env.PORT || 3000;
 app.use(cors({origin: 'http://localhost:8080'}));
 app.use(express.json());
 
-app.get('/register', GetRegistration);
+// Routes
+app.post('/pre_register', PostPreRegistration);
 app.post('/register', PostRegistration);
-app.get('/authenticate', GetAuth);
-app.post('/authenticate', PostAuth);
+app.get('/pre_authenticate', PostPreAuthentication);
+app.post('/authenticate', PostAuthentication);
 
-app.listen(
-    PORT,
-    () => console.log(`Server live at http://localhost:${PORT}`)
-);
-
-
-
-
-
-
-
-
-
+// Connect to database
+mongoose.connect(process.env.DB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+}).then(() => {
+    console.log(`Connected to database.`);
+// Start listening
+    app.listen(
+        PORT,
+        () => console.log(`Server live at http://localhost:${PORT}`)
+    );
+});

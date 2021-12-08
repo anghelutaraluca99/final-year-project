@@ -1,0 +1,1 @@
+exports.databaseQueries = require("./database_queries");

@@ -1,6 +1,5 @@
 const WebAuthnServer = require('@simplewebauthn/server');
-const {databaseQueries} = require("../models");
-const fs = require('fs');
+const {usersQueries} = require("../models/database_queries");
 
 module.exports = async (req, res) => {
 
@@ -18,26 +17,10 @@ module.exports = async (req, res) => {
 
     const options = WebAuthnServer.generateRegistrationOptions(opt);
 
-    // To be replaced with database queries
-    // let rawdata = fs.readFileSync('users.json');
-    // let users = JSON.parse(rawdata);
-
-    // let newUser = {
-    //     userID : userID,
-    //     userName : userName,
-    //     challenge : options.challenge
-    // };
-    // users.push(newUser);
-
-    const userPreRegisterResult = await databaseQueries.preRegisterUser({
+    const userPreRegisterResult = await usersQueries.preRegisterUser({
         userID : userID,
         userName : userName,
         challenge: options.challenge
     });
-
-    // To be replaced with database queries
-    // let data = JSON.stringify(users);
-    // fs.writeFileSync('users.json', data);
-
     res.send(options);
 }

@@ -1,12 +1,14 @@
 const WebAuthnServer = require('@simplewebauthn/server');
-const {databaseQueries} = require("../models");
+const {usersQueries, authenticatorsQueries} = require("../models/database_queries");
 
 module.exports = async (req, res) => {
+
+    console.log(req.body);
 
     userID = req.body.email;
 
     // Get challenge from DB
-    const challenge = await databaseQueries.getUserRegistrationChallenge(userID);
+    const challenge = await usersQueries.getUserChallenge(userID);
 
     // Verify the signed challenge
     let verification;
@@ -25,13 +27,18 @@ module.exports = async (req, res) => {
     const { verified, registrationInfo } = verification;
 
     if(verified) {
-        const { credentialPublicKey, credentialID, counter } = registrationInfo;
-        const newAuthenticator = {
-            credentialID,
-            credentialPublicKey,
-            counter,
-        };
+        let { credentialPublicKey, credentialID, counter } = registrationInfo;
+
+        console.log(credentialID);
+        console.log(credentialID.toString('hex'));
+        console.log(credentialPublicKey);
+        console.log(credentialPublicKey.toString('hex'));
+
+        const resultRegisterAuthenticator = await authenticatorsQueries.registerAuthenticator({
+            userID: userID,
+            credentialID: credentialID.toString('hex'),
+            credentialPublicKey: credentialPublicKey.toString('hex')
+        });
     }
-    console.log(verified);
     return { verified };
 }

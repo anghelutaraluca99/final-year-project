@@ -8,11 +8,6 @@ const{
     PostPreAuthentication
 } = require("./controllers");
 
-// const {PostRegistration} = require('./PostRegistrationController');
-// const {PostPreRegistration} = require('./PostPreRegistrationController');
-// const {PostAuthentication} = require('./PostAuthenticationController');
-// const {PostPreAuthentication} = require('./PostPreAuthenticationController');
-
 const mongoose = require('mongoose');
 
 require('dotenv').config();
@@ -27,7 +22,7 @@ app.use(express.json());
 // Routes
 app.post('/pre_register', PostPreRegistration);
 app.post('/register', PostRegistration);
-app.get('/pre_authenticate', PostPreAuthentication);
+app.post('/pre_authenticate', PostPreAuthentication);
 app.post('/authenticate', PostAuthentication);
 
 // Connect to database

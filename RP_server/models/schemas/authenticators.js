@@ -1,13 +1,18 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const UserSchema = new Schema(
+const AuthenticatorSchema = new Schema(
     {
+        userID: {
+            type: "string",
+        },
         credentialID: {
-            type: "buffer",
+            // type: "Buffer",
+            type: "string",
         },
         credentialPublicKey: {
-            type: "buffer",
+            // type: "Buffer",
+            type: "string",
         },
         counter: {
             type: "number",
@@ -21,6 +26,6 @@ const UserSchema = new Schema(
     }
 );
 
-const authenticators = mongoose.model("authenticators", UserSchema);
+const authenticators = mongoose.model("authenticators", AuthenticatorSchema);
 
 module.exports = authenticators;

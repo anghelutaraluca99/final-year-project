@@ -1,5 +1,9 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const app = express();
+require('dotenv').config();
+const PORT = process.env.PORT || 3000;
 
 const{
     PostRegistration,
@@ -7,25 +11,17 @@ const{
     PostAuthentication,
     PostPreAuthentication
 } = require("./controllers");
-
-const mongoose = require('mongoose');
-
-require('dotenv').config();
-
-const app = express();
-const PORT = process.env.PORT || 3000;
+const { requireAuth } = require("./middlewares");
+const router = require("./routes");
 
 // Middlewares
 app.use(cors({origin: 'http://localhost:8080'}));
 app.use(express.json());
 
 // Routes
-app.post('/pre_register', PostPreRegistration);
-app.post('/register', PostRegistration);
-app.post('/pre_authenticate', PostPreAuthentication);
-app.post('/authenticate', PostAuthentication);
+app.use("/", router);
 
-// Connect to database
+// Connection to database
 mongoose.connect(process.env.DB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,

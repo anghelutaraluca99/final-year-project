@@ -34,18 +34,17 @@ module.exports = async (req, res) => {
 
     if (verified) {
         await authenticatorsQueries.updateAuthenticatorCounter({userID: userID, credentialID: credID});
-
-        // const tokenPayload = {
-        //     email: req.body.email,
-        //     name: req.body.name,
-        //     username: req.body.username
-        // };
-        // console.log(process.env.JWT_SECRET);
-        // const token = await jwtUtils.createToken(
-        //     tokenPayload,
-        //     process.env.JWT_SECRET
-        // );
-        // console.log(token);
+        const tokenPayload = {
+            email: req.body.email,
+            name: req.body.name,
+            username: req.body.username
+        };
+        console.log(process.env.JWT_SECRET);
+        const token = await jwtUtils.createToken(
+            tokenPayload,
+            process.env.JWT_SECRET
+        );
+        console.log(token);
     }
 
     res.send({verified});

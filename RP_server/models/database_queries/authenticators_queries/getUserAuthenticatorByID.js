@@ -1,6 +1,5 @@
 const { authenticators } = require("../../schemas");
 const mongoose = require('mongoose');
-const bson = require('bson')
 
 module.exports = async function ({userID, credentialID}) {
 

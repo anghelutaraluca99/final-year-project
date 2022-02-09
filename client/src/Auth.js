@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { Link, useNavigate } from "react-router-dom";
 import './App.css';
 import {startAuthentication} from '@simplewebauthn/browser';
 
@@ -7,6 +8,7 @@ function Auth() {
     const [email, setEmail] = useState(null);
     const [username, setUsername] = useState(null);
     const [name, setName] = useState(null);
+    const navigate = useNavigate();
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -15,8 +17,6 @@ function Auth() {
         respObj.name = name;
         respObj.email = email;
         respObj.username = username;
-
-        console.log("before 1st post");
 
         // GET authentication options
         const resp = await fetch('http://localhost:3000/pre_authenticate', {
@@ -27,15 +27,13 @@ function Auth() {
             body: JSON.stringify(respObj),
         });
 
-
-
+        // eslint-disable-next-line
         let asseResp;
         try {
             // Pass the options to the authenticator and wait for a response
             respObj.asseResp = await startAuthentication(await resp.json());
         } catch (error) {
             throw error;
-            console.log(error);
         }
 
         const verificationResp = await fetch('http://localhost:3000/authenticate', {
@@ -47,7 +45,13 @@ function Auth() {
         });
 
         // Wait for the results of verification
-        const verificationJSON = await verificationResp.json();
+        const responseJSON = await verificationResp.json();
+        console.log(responseJSON);
+        if(responseJSON?.token) {
+            localStorage.setItem("jwt_token", responseJSON.token);
+            localStorage.setItem("username", responseJSON.user.username);
+            navigate("/");
+        }
     }
 
 

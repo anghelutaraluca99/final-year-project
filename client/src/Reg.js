@@ -25,6 +25,7 @@ function Reg() {
             body: JSON.stringify(respObj),
         });
 
+        // eslint-disable-next-line
         let attResp;
         try {
             // Pass the options to the authenticator and wait for a response

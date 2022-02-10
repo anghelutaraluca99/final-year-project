@@ -33,19 +33,33 @@ module.exports = async (req, res) => {
     console.log(authenticationInfo);
 
     if (verified) {
-        await authenticatorsQueries.updateAuthenticatorCounter({userID: userID, credentialID: credID});
+        // authorised
+
+        await authenticatorsQueries.updateAuthenticatorCounter({userID: userID, credentialID: credID}); //update authenticator counter
+
         const tokenPayload = {
             email: req.body.email,
             name: req.body.name,
             username: req.body.username
-        };
-        console.log(process.env.JWT_SECRET);
+        }; // construct token payload for JWT token
         const token = await jwtUtils.createToken(
             tokenPayload,
             process.env.JWT_SECRET
-        );
-        console.log(token);
-    }
+        ); // construct JWT token
 
-    res.send({verified});
+        const resp = {
+            message: "Login successful!",
+            token,
+            user: tokenPayload
+        };
+        return res.status(200).send(resp); // construct and send response
+
+    } else {
+        // unauthorised
+
+        return res.status(401).send({
+            message: "Login failed!",
+            error: "" // TODO :: add error handling
+        });
+    }
 }

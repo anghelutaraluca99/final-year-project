@@ -3,8 +3,6 @@ const {usersQueries, authenticatorsQueries} = require("../models/database_querie
 
 module.exports = async (req, res) => {
 
-    console.log(req.body);
-
     userID = req.body.email;
 
     // Get challenge from DB
@@ -20,7 +18,6 @@ module.exports = async (req, res) => {
             expectedRPID: 'localhost',
         });
     } catch (error) {
-        console.error(error);
         return res.status(400).send({ error: error.message });
     }
 
@@ -29,10 +26,10 @@ module.exports = async (req, res) => {
     if(verified) {
         let { credentialPublicKey, credentialID, counter } = registrationInfo;
 
-        console.log(credentialID);
-        console.log(credentialID.toString('hex'));
-        console.log(credentialPublicKey);
-        console.log(credentialPublicKey.toString('hex'));
+        // console.log(credentialID);
+        // console.log(credentialID.toString('hex'));
+        // console.log(credentialPublicKey);
+        // console.log(credentialPublicKey.toString('hex'));
 
         const resultRegisterAuthenticator = await authenticatorsQueries.registerAuthenticator({
             userID: userID,

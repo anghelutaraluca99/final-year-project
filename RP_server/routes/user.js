@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const samlProvider = require("samlp");
 const { requireAuth } = require("../middlewares");
 const {
     PostRegistration,
@@ -13,7 +14,17 @@ router.post('/register', PostRegistration);
 router.post('/pre_authenticate', PostPreAuthentication);
 router.post('/authenticate', PostAuthentication);
 
+// Middlewares
 router.use('/', requireAuth);
 router.get('/', GetUser);
+router.get('/samlProvider', samlProvider.auth({
+    issuer: "localhost",
+    cert: process.env.CERT,
+    key: process.env.KEY,
+    getPostURL: function (wtrealm, wreply, req, callback) {
+        return callback( null, 'http://localhost/3000')
+      }
+}));
+
 
 module.exports = router;

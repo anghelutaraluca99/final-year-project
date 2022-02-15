@@ -7,16 +7,20 @@ const {
     PostAuthentication,
     PostPreAuthentication,
     GetUser,
+    AuthenticatorsList,
 } = require("../controllers");
+
+// Middlewares
+// router.use('!/samlProvider', requireAuth);
+router.use('/', requireAuth);
+router.get('/', GetUser);
 
 router.post('/pre_register', PostPreRegistration);
 router.post('/register', PostRegistration);
 router.post('/pre_authenticate', PostPreAuthentication);
 router.post('/authenticate', PostAuthentication);
+router.post('/authenticators', AuthenticatorsList);
 
-// Middlewares
-router.use('!/samlProvider', requireAuth);
-router.get('/', GetUser);
 router.get('/samlProvider', samlProvider.auth({
     issuer: "http://localhost/3000",
     cert: process.env.CERT,

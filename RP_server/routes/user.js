@@ -15,10 +15,10 @@ router.post('/pre_authenticate', PostPreAuthentication);
 router.post('/authenticate', PostAuthentication);
 
 // Middlewares
-router.use('/', requireAuth);
+router.use('!/samlProvider', requireAuth);
 router.get('/', GetUser);
 router.get('/samlProvider', samlProvider.auth({
-    issuer: "localhost",
+    issuer: "http://localhost/3000",
     cert: process.env.CERT,
     key: process.env.KEY,
     getPostURL: function (wtrealm, wreply, req, callback) {

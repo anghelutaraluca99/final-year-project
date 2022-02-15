@@ -7,6 +7,7 @@ import {
 import './App.css';
 import Nav from './Nav';
 import Home from './Home';
+import Auth from './Auth';
 
 
 function App() {
@@ -16,6 +17,7 @@ return (
             <Nav />
             <Routes>
                 <Route exact path='/' element={<Home/>}/>
+                <Route exact path='/auth' element={<Auth/>}/>
             </Routes>
         </div>
     </Router>

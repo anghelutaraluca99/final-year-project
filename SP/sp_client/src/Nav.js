@@ -13,11 +13,11 @@ function Nav() {
             <nav>
                 <h3>TODO :: LOGO</h3>
                 <ul className="nav_links">
-                    <Link style={navStyle} to="/register">
-                        <li>Register</li>
+                    <Link style={navStyle} to="/">
+                        <li>Home</li>
                     </Link>
-                    <Link  style={navStyle} to="/authenticate">
-                        <li>Authenticate</li>
+                    <Link  style={navStyle} to="/auth">
+                        <li>Log in</li>
                     </Link>
                 </ul>
             </nav>

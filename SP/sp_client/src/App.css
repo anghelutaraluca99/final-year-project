@@ -17,3 +17,9 @@ nav {
   align-items: center;
   list-style: none;
 }
+
+button {
+  min-height: 3vh;
+  background: darkolivegreen;
+  color: blanchedalmond;
+}

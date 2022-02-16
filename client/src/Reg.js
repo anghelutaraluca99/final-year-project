@@ -27,14 +27,15 @@ function Reg() {
 
         let parsedResp = await resp.json();
 
-        if(parsedResp.error === null) {
-            // if no error is returned from RP
-
+        if(typeof(parsedResp?.error) !== "undefined") {
+            // If response contains an error
+            console.log(parsedResp.error);
+        } else {
             // eslint-disable-next-line
             let attResp;
             try {
                 // Pass the options to the authenticator and wait for a response
-                respObj.attResp = await startRegistration(await resp.json());
+                respObj.attResp = await startRegistration(parsedResp);
             } catch (error) {
                 if (error.name === 'InvalidStateError') {
                     console.log("Error: Authenticator was probably already registered by user");
@@ -61,12 +62,9 @@ function Reg() {
             if (verificationJSON && verificationJSON.verified) {
                 console.log("Success!!!!")
             } else {
-                console.log(JSON.stringify(verificationJSON));
+                console.log(verificationJSON);
             }
-        } else {
-            console.log(parsedResp.error);
         }
-
     }
 
     return (
@@ -75,11 +73,11 @@ function Reg() {
             {/*TODO: update to use FORMIK*/}
             <form onSubmit={handleSubmit}>
                 <label>Email address:</label><br/>
-                <input name="email" type="text" onChange={(e) => {setEmail(e.target.value);console.log(email); }}/><br/><br/>
+                <input name="email" type="text" onChange={(e) => {setEmail(e.target.value);}}/><br/><br/>
                 <label>Username:</label><br/>
-                <input name="username" type="text" onChange={(e) => {setUsername(e.target.value);console.log(username); }}/><br/><br/>
+                <input name="username" type="text" onChange={(e) => {setUsername(e.target.value); }}/><br/><br/>
                 <label>Name:</label><br/>
-                <input name="name" type="text" onChange={(e) => {setName(e.target.value);console.log(name); }}/><br/><br/>
+                <input name="name" type="text" onChange={(e) => {setName(e.target.value); }}/><br/><br/>
                 <input type="submit" value="Create Account"/>
             </form>
         </div>

@@ -6,11 +6,16 @@ module.exports = async function ({
      challenge
  }) {
 
-    const user = new users({
-        userID: userID,
-        username: username,
-        challenge: challenge,
-    });
-    res = await user.save();
+    let valid = await users.findOne({ userID: userID }, "-_id");
+    if(valid === null) {
+        const user = new users({
+            userID: userID,
+            username: username,
+            challenge: challenge,
+        });
+        res = await user.save();
+    } else {
+        res = "Error: email already registered"
+    }
     return res;
 };

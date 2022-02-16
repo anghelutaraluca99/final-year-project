@@ -22,5 +22,10 @@ module.exports = async (req, res) => {
         userName : userName,
         challenge: options.challenge
     });
-    res.send(options);
+    if(userPreRegisterResult === "Error: email already registered")
+        res.status(409).send({
+            error: "Email already registered."
+        });
+    else    
+      res.send(options);
 }

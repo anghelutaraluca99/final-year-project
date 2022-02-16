@@ -25,41 +25,46 @@ function Reg() {
             body: JSON.stringify(respObj),
         });
 
-        // eslint-disable-next-line
-        let attResp;
-        try {
-            // Pass the options to the authenticator and wait for a response
-            respObj.attResp = await startRegistration(await resp.json());
-        } catch (error) {
-            // Some basic error handling
-            if (error.name === 'InvalidStateError') {
-                console.log("Error: Authenticator was probably already registered by user");
-            } else {
-                console.log(error);
-                console.log('jujuj');
+        let parsedResp = await resp.json();
+
+        if(parsedResp.error === null) {
+            // if no error is returned from RP
+
+            // eslint-disable-next-line
+            let attResp;
+            try {
+                // Pass the options to the authenticator and wait for a response
+                respObj.attResp = await startRegistration(await resp.json());
+            } catch (error) {
+                if (error.name === 'InvalidStateError') {
+                    console.log("Error: Authenticator was probably already registered by user");
+                } else {
+                    console.log(error);
+                }
+                throw error;
             }
 
-            throw error;
-        }
+            // POST the response to the endpoint that calls
+            // @simplewebauthn/server -> verifyRegistrationResponse()
+            const verificationResp = await fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(respObj),
+            });
 
-        // POST the response to the endpoint that calls
-        // @simplewebauthn/server -> verifyRegistrationResponse()
-        const verificationResp = await fetch('http://localhost:3000/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(respObj),
-        });
+            // Wait for the results of verification
+            const verificationJSON = await verificationResp.json();
 
-        // Wait for the results of verification
-        const verificationJSON = await verificationResp.json();
-
-        // Log answer saved in 'verified'
-        if (verificationJSON && verificationJSON.verified) {
-            console.log("Success!!!!")
+            // Log answer saved in 'verified'
+            if (verificationJSON && verificationJSON.verified) {
+                console.log("Success!!!!")
+            } else {
+                console.log(JSON.stringify(verificationJSON));
+            }
         } else {
-            console.log(JSON.stringify(verificationJSON));
+            console.log(parsedResp.error);
         }
 
     }

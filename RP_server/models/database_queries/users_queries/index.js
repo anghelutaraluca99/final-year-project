@@ -4,3 +4,4 @@ exports.preAuthenticateUser = require("./PreAuthenticateUser")
 exports.authenticateUser = require("./AuthenticateUser");
 exports.getUserChallenge = require("./GetUserChallenge");
 exports.setUserCurrentChallenge = require("./setUserCurrentChallenge");
+exports.UpdateUserChallenge = require("./UpdateUserChallenge");

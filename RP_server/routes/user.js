@@ -11,13 +11,14 @@ const {
     DeleteAuthenticator,
 } = require("../controllers");
 
-// Middlewares
-// router.use('!/samlProvider', requireAuth);
-router.use('/', requireAuth);
-router.get('/', GetUser);
-
+// Registration routes; traffic to these routes should nto go through the middleware
 router.post('/pre_register', PostPreRegistration);
 router.post('/register', PostRegistration);
+
+// Middleware to check for JWT token
+router.use('/', requireAuth);
+
+router.get('/', GetUser);
 router.post('/pre_authenticate', PostPreAuthentication);
 router.post('/authenticate', PostAuthentication);
 router.get('/authenticators', AuthenticatorsList);

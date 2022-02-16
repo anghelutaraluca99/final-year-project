@@ -9,6 +9,7 @@ import Nav from './Nav';
 import Home from './Home';
 import Reg from './Reg';
 import Auth from './Auth';
+import Settings from './Settings';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
                   <Route exact path='/' element={<Home/>}/>
                   <Route exact path='/register' element={<Reg/>}/>
                   <Route exact path='/authenticate' element={<Auth/>}/>
+                  <Route exact path='/settings' element={<Settings/>}/>
               </Routes>
           </div>
       </Router>

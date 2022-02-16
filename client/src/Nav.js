@@ -19,6 +19,9 @@ function Nav() {
                     <Link  style={navStyle} to="/authenticate">
                         <li>Authenticate</li>
                     </Link>
+                    <Link  style={navStyle} to="/settings">
+                        <li>Settings</li>
+                    </Link>
                 </ul>
             </nav>
         </div>

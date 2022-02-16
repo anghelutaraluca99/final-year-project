@@ -5,7 +5,6 @@ module.exports = (req, res, next) => {
     if (token) {
         req.user = decodeToken(token, process.env.JWT_SECRET)?.payload;
         if (req.user) {
-            console.log(req.user);
             return next();
         }
     }

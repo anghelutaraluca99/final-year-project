@@ -8,6 +8,7 @@ const {
     PostPreAuthentication,
     GetUser,
     AuthenticatorsList,
+    DeleteAuthenticator,
 } = require("../controllers");
 
 // Middlewares
@@ -19,7 +20,8 @@ router.post('/pre_register', PostPreRegistration);
 router.post('/register', PostRegistration);
 router.post('/pre_authenticate', PostPreAuthentication);
 router.post('/authenticate', PostAuthentication);
-router.post('/authenticators', AuthenticatorsList);
+router.get('/authenticators', AuthenticatorsList);
+router.post('/authenticators', DeleteAuthenticator);
 
 router.get('/samlProvider', samlProvider.auth({
     issuer: "http://localhost/3000",

@@ -3,7 +3,7 @@ const {usersQueries, authenticatorsQueries} = require("../models/database_querie
 
 module.exports = async (req, res) => {
 
-    userID = req.body.email;
+    userID = req.user.email;
 
     // Get challenge from DB
     const challenge = await usersQueries.getUserChallenge(userID);
@@ -28,10 +28,6 @@ module.exports = async (req, res) => {
         let reset_challenge = await usersQueries.UpdateUserChallenge({userID: userID, challenge: "0"});
 
         console.log(reset_challenge);
-        // console.log(credentialID);
-        // console.log(credentialID.toString('hex'));
-        // console.log(credentialPublicKey);
-        // console.log(credentialPublicKey.toString('hex'));
 
         const resultRegisterAuthenticator = await authenticatorsQueries.registerAuthenticator({
             userID: userID,

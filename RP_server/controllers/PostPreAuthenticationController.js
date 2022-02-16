@@ -5,7 +5,6 @@ const {usersQueries, authenticatorsQueries} = require("../models/database_querie
 module.exports = async (req, res) => {
 
     let userID = req.body.email;
-    let userName = req.body.username;
 
     let authenticators = await authenticatorsQueries.getAuthenticators(userID);
 
@@ -21,7 +20,7 @@ module.exports = async (req, res) => {
     });
 
     // Resets challenge for user
-    let resNewChallenge = await usersQueries.setUserCurrentChallenge({userID: userID, new_challenge: options.challenge});
-
+    let resNewChallenge = await usersQueries.UpdateUserChallenge({userID: userID, challenge: options.challenge});
+    console.log(resNewChallenge);
     res.send(options);
 }

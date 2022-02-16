@@ -36,7 +36,8 @@ module.exports = async (req, res) => {
         // authorised
 
         await authenticatorsQueries.updateAuthenticatorCounter({userID: userID, credentialID: credID}); //update authenticator counter
-
+        let reset_challenge = await usersQueries.UpdateUserChallenge({userID: userID, challenge: "0"}); // reset challenge
+        
         const tokenPayload = {
             email: req.body.email,
             name: req.body.name,

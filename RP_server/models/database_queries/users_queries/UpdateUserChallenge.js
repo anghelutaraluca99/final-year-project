@@ -7,10 +7,9 @@ module.exports = async function ({
 
     let res;
     try {
-        let data = await users.findOne({ userID: userID }, "-_id");
-        data.challenge = challenge;
-        await data.save();
-        data = await users.findOne({ userID: userID }, "-_id");
+        res = await users.updateOne({userID: userID}, {challenge: challenge});
+        console.log(res);
+        let data = await users.findOne({ userID: userID });
         res = data.challenge === challenge
     } catch (err) {
         res = err;

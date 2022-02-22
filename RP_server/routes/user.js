@@ -20,6 +20,16 @@ router.post('/register', PostRegistration);
 router.post('/pre_authenticate', PostPreAuthentication);
 router.post('/authenticate', PostAuthentication);
 
+
+router.get('/samlProvider', samlProvider.auth({
+    issuer: "http://localhost/3000",  
+    cert: process.env.CERT,
+    key: process.env.KEY,
+    getPostURL: function (wtrealm, wreply, req, callback) {
+        return callback( null, 'http://localhost/3000')
+      }
+}));
+
 // Middleware to check for JWT token
 router.use('/', requireAuth);
 
@@ -29,14 +39,7 @@ router.post('/authenticators', DeleteAuthenticator);
 router.post('/pre_register_new_authenticator', PreRegisterNewAuthenticator);
 router.post('/register_new_authenticator', RegisterNewAuthenticator);
 
-router.get('/samlProvider', samlProvider.auth({
-    issuer: "http://localhost/3000",
-    cert: process.env.CERT,
-    key: process.env.KEY,
-    getPostURL: function (wtrealm, wreply, req, callback) {
-        return callback( null, 'http://localhost/3000')
-      }
-}));
+
 
 
 module.exports = router;

@@ -6,7 +6,7 @@ function Auth() {
     async function handleLogIn(e) {
         e.preventDefault();
 
-        const resp = await fetch('http://localhost:4000/auth', {
+        const resp = await fetch('http://localhost:4000/login', {
             method: 'GET',
         });
 

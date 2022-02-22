@@ -7,7 +7,7 @@ const router = require("./routes");
 const PORT = process.env.PORT || 4000;
 
 // Middlewares
-app.use(cors({origin: 'http://localhost:8080'}));
+app.use(cors({origin: 'http://localhost:4001'}));
 app.use(express.json());
 
 // Routes // TODO - define routes

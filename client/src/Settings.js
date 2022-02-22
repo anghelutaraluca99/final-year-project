@@ -2,13 +2,29 @@ import React from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import {startRegistration} from '@simplewebauthn/browser';
 import './App.css';
+import GetUser from './GetUser';
+import {useState, useEffect} from 'react';
 
 function Settings() {
     
     const navigate = useNavigate();
+    const [visible, setVisible] = useState(false);
+
+    const digestApiResponse = async (resp) => {
+
+        if(typeof(resp?.error) !== "undefined") {
+            setVisible(false);
+        } else {
+            setVisible(true);
+        }
+    }
+
+    useEffect(() => {
+        GetUser().then(resp => digestApiResponse(resp));
+    }, [])
+
 
     let handleRegistration = async () => {
-        // let respObj = {};
         // GET registration options from the endpoint that calls
         // @simplewebauthn/server -> generateRegistrationOptions()
         const resp = await fetch('http://localhost:3000/pre_register_new_authenticator', {
@@ -61,7 +77,6 @@ function Settings() {
         }
     }
 
-
     let handleSelect = (e) => {
         if(e.target.value === "Delete Authenticator"){ 
             navigate("/deleteAuthenticator");
@@ -71,15 +86,19 @@ function Settings() {
         }
     }
 
-
     return (
-        <div>
+        <>
+        {visible && <div>
             <h3>Settings Page</h3>
-
             <button onClick={handleSelect} value="Delete Authenticator">Delete Authenticator</button>
             <button onClick={handleSelect} value="Register New Authenticator">Register New Authenticator</button>
 
-        </div>
+        </div>}
+        {!visible && <div>
+            <h3>Unauthorised, please log in.</h3>
+
+        </div>}
+        </>
     );
 }
 

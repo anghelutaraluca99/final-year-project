@@ -1,32 +1,22 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
 import './App.css';
+import GetUser from './GetUser';
 
 function Home() {
-    const [isLoaded, setIsLoaded] = useState(false);
     const [message, setMessage] = useState(null);
 
-    const digestApiResponse = async (data) => {
+    const digestApiResponse = async (resp) => {
 
-        const parsedData = await data.json();
-        console.log(parsedData);
-        if(data.status === 200) {
-            setMessage("Hello, " + parsedData?.name + "!");
+        if(typeof(resp?.error) !== "undefined") {
+            setMessage("Please log in");
         } else {
-            if(data.status === 401) {
-                setMessage("Please log in.");
-            }
+            setMessage("Hello, " + resp?.name + "!");
         }
-        setIsLoaded(true);
     }
 
     useEffect(() => {
-        fetch('http://localhost:3000/', {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,
-            },
-        }).then(data => digestApiResponse(data));
+        GetUser().then(resp => digestApiResponse(resp));
     }, [])
 
     return (

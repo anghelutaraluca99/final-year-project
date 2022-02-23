@@ -8,7 +8,7 @@ function Home() {
 
     const digestApiResponse = async (resp) => {
 
-        if(typeof(resp?.error) !== "undefined") {
+        if(resp?.error) {
             setMessage("Please log in");
         } else {
             setMessage("Hello, " + resp?.name + "!");

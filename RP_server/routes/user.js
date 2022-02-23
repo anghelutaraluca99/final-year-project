@@ -11,6 +11,7 @@ const {
     DeleteAuthenticator,
     PreRegisterNewAuthenticator,
     RegisterNewAuthenticator,
+    Services,
 } = require("../controllers");
 
 // Registration + authentication routes; traffic to these routes should not go through the middleware
@@ -33,13 +34,11 @@ router.get('/samlProvider', samlProvider.auth({
 // Middleware to check for JWT token
 router.use('/', requireAuth);
 
-router.get('/', GetUser);
 router.get('/authenticators', AuthenticatorsList);
 router.post('/authenticators', DeleteAuthenticator);
 router.post('/pre_register_new_authenticator', PreRegisterNewAuthenticator);
 router.post('/register_new_authenticator', RegisterNewAuthenticator);
-
-
-
+router.get('/services', Services);
+router.get('/', GetUser);
 
 module.exports = router;

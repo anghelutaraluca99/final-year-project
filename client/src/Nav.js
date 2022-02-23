@@ -14,7 +14,7 @@ function Nav() {
 
     const digestApiResponse = async (resp) => {
 
-        if(typeof(resp?.error) !== "undefined") {
+        if(resp?.error) {
             setVisible(false);
         } else {
             setVisible(true);
@@ -39,6 +39,9 @@ function Nav() {
                     </Link>
                     {visible && <Link  style={navStyle} to="/settings">
                         <li>Settings</li>
+                    </Link>}
+                    {visible && <Link  style={navStyle} to="/services">
+                        <li>Services</li>
                     </Link>}
                 </ul>
             </nav>

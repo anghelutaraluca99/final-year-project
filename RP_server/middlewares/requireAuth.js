@@ -12,6 +12,6 @@ module.exports = (req, res, next) => {
 
     console.log("Unauthorised access");
     return res.status(401).send({
-        message: "You need a valid authorization token.",
+        error: "You need a valid authorization token.",
     });
 };

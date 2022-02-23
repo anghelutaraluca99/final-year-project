@@ -11,7 +11,7 @@ import Reg from './Reg';
 import Auth from './Auth';
 import Settings from './Settings';
 import DeleteAuthenticator from './DeleteAuthenticator';
-import GetUser from './GetUser';
+import Services from './Services';
 
 
 function App() {
@@ -25,6 +25,7 @@ function App() {
                   <Route exact path='/authenticate' element={<Auth/>}/>
                   <Route exact path='/settings' element={<Settings/>}/>
                   <Route exact path='/deleteAuthenticator' element={<DeleteAuthenticator/>}/>
+                  <Route exact path='/services' element={<Services/>}/>
               </Routes>
           </div>
       </Router>

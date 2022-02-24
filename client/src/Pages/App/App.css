@@ -26,7 +26,7 @@ ul {
   list-style: none;
 }
 
-.service_link:link, .service_link:visited {
+.service_link, .service_link:visited {
   background-color: white;
   color: black;
   border: 2px solid darkolivegreen;

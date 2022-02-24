@@ -1,8 +1,8 @@
 import React from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {startRegistration} from '@simplewebauthn/browser';
-import './App.css';
-import GetUser from './GetUser';
+import './Settings.css';
+import GetUser from '../../Utils/GetUser';
 import {useState, useEffect} from 'react';
 
 function Settings() {

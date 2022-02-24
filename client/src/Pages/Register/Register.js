@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import './App.css';
+import './Register.css';
 import {startRegistration} from '@simplewebauthn/browser';
 
-function Reg() {
+function Register() {
     const [email, setEmail] = useState(null);
     const [username, setUsername] = useState(null);
     const [name, setName] = useState(null);
@@ -84,4 +84,4 @@ function Reg() {
     );
 }
 
-export default Reg;
+export default Register;

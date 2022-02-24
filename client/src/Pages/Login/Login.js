@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
-import { Link, useNavigate } from "react-router-dom";
-import './App.css';
+import { useNavigate } from "react-router-dom";
+import './Login.css';
 import {startAuthentication} from '@simplewebauthn/browser';
 
-function Auth() {
+function Login() {
 
     const [email, setEmail] = useState(null);
     const [username, setUsername] = useState(null);
@@ -72,4 +72,4 @@ function Auth() {
     );
 }
 
-export default Auth;
+export default Login;

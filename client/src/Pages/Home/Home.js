@@ -1,7 +1,7 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
-import './App.css';
-import GetUser from './GetUser';
+import './Home.css';
+import GetUser from '../../Utils/GetUser';
 
 function Home() {
     const [message, setMessage] = useState(null);

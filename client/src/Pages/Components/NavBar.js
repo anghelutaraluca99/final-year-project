@@ -1,11 +1,12 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import GetUser from './GetUser';
+import GetUser from '../../Utils/GetUser';
 import {useState, useEffect} from 'react';
 
-function Nav() {
+import './NavBar.css';
 
-    //TODO :: Move to CSS
+function NavBar() {
+
     const navStyle= {
         color:'blanchedalmond'
     }
@@ -29,18 +30,18 @@ function Nav() {
     return (
         <div>
             <nav>
-                <h3>TODO :: LOGO</h3>
+                <h3>Final Year Project</h3>
                 <ul className="nav_links">
                     <Link style={navStyle} to="/register">
                         <li>Register</li>
                     </Link>
-                    <Link  style={navStyle} to="/authenticate">
+                    <Link style={navStyle} to="/authenticate">
                         <li>Authenticate</li>
                     </Link>
-                    {visible && <Link  style={navStyle} to="/settings">
+                    {visible && <Link style={navStyle} to="/settings">
                         <li>Settings</li>
                     </Link>}
-                    {visible && <Link  style={navStyle} to="/services">
+                    {visible && <Link style={navStyle} to="/services">
                         <li>Services</li>
                     </Link>}
                 </ul>
@@ -49,4 +50,4 @@ function Nav() {
     );
 }
 
-export default Nav;
+export default NavBar;

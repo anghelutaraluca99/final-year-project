@@ -1,10 +1,9 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
-import { Link, useNavigate } from "react-router-dom";
-import './App.css';
+import { useNavigate } from "react-router-dom";
+import './Settings.css';
 
 function DeleteAuthenticator() {
-    const [isLoaded, setIsLoaded] = useState(false);
     const [authenticators, setAuthenticators] = useState(null);
     const [toDelete, setToDelete] = useState(null);
     const navigate = useNavigate();
@@ -14,7 +13,6 @@ function DeleteAuthenticator() {
         console.log(parsedData);
         if(data.status === 200) {
             setAuthenticators(parsedData);
-            setIsLoaded(true);
         } else {
             console.log("Error when fetching authenticators");
         }

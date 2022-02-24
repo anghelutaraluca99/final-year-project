@@ -17,6 +17,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.2.1",
     "mongoose": "^6.1.0",
+    "oidc-provider": "^7.10.6",
     "saml": "^2.0.1",
     "samlp": "^7.0.0"
   }

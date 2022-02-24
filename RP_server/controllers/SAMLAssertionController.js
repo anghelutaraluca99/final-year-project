@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
     cert: fs.readFileSync(path.resolve(__dirname, '../localhost_public.csr')),
     key: fs.readFileSync(path.resolve(__dirname, '../localhost_private.key')),
     issuer: 'http://localhost:3000',
-    lifetimeInSeconds: 6000,
+    lifetimeInSeconds: 600,
     audiences: 'http://localhost:4000',
     attributes: {
         'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress': req.user.email,
@@ -19,7 +19,6 @@ module.exports = async (req, res) => {
     };
 
     var signedAssertion = saml.create(options);
-    // var signedAssertion = saml.createUnsignedAssertion(options);
     console.log(signedAssertion);
     return res.send(signedAssertion);
 }

@@ -20,6 +20,7 @@ module.exports = async (req, res) => {
             credential: req.body.asseResp,
             expectedChallenge: challenge,
             expectedOrigin: 'http://localhost:8080',
+            // expectedOrigin: FIDO_ORIGIN,
             expectedRPID: 'localhost',
             authenticator: authenticator,
         });

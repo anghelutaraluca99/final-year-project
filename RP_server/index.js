@@ -6,33 +6,52 @@ require('dotenv').config();
 const PORT = process.env.PORT || 3000;
 const { Provider } = require('oidc-provider');
 const router = require("./routes");
+const configurationOidc = require('./oidc/configuration/oidc_config');
 
 // Open ID Connect Identity Provider
-const configuration = {
-    // ... see /docs for available configuration
-    clients: [{
-      client_id: 'foo',
-      client_secret: 'bar',
-      redirect_uris: ['http://localhost:8080/oidc'],
-      // ... other client properties
-    }],
-  };
-const oidc = new Provider('http://localhost:3000', configuration, {
-    async findAccount(ctx, id) {
-      return {
-        accountId: id,
-        async claims(use, scope) { return { sub: id }; },
-      };
-    }
-  });
+// const configuration = {
+//     // ... see /docs for available configuration
+//     clients: [{
+//       client_id: 'development-implicit',
+//       application_type: 'web',
+//       token_endpoint_auth_method: 'none',
+//       response_types: ['id_token'],
+//       grant_types: ['implicit'],
+//       redirect_uris: ['http://localhost:8080'], // this fails two regular validations http: and localhost
+//     }],
+//     claims: {
+//       address: ['address'],
+//       email: ['email'],
+//       profile: ['name'],
+//     },
+//     interactions: {
+//       url(ctx, interaction) { // eslint-disable-line no-unused-vars
+//         return `http://localhost:8080/interaction/${interaction.uid}`;
+//       },
+//     },
+//     features: {
+//       devInteractions: { enabled: false }
+//     },
+//   };
+const oidc = new Provider('http://localhost:3000', configurationOidc);
 
 // Middlewares
-app.use(cors({origin: 'http://localhost:8080'}));
-app.use(cors());
+const whitelist = ['http://localhost:8080', 'http://localhost:4000'];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
-app.use("/oidc", oidc.callback());
 
 // Routes
+app.use("/oidc", oidc.callback());
 app.use("/", router);
 
 // Connection to database

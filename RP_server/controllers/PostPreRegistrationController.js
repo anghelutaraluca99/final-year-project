@@ -3,7 +3,6 @@ const {usersQueries} = require("../models/database_queries");
 
 module.exports = async (req, res) => {
 
-    // TBC
     let userID = req.body.email;
     let userName = req.body.username;
 

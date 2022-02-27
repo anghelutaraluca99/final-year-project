@@ -15,6 +15,7 @@ module.exports = async (req, res) => {
             credential: req.body.attResp,
             expectedChallenge: challenge.toString(),
             expectedOrigin: 'http://localhost:8080',
+            // expectedOrigin: process.env.FIDO_ORIGIN,
             expectedRPID: 'localhost',
         });
     } catch (error) {
@@ -26,12 +27,6 @@ module.exports = async (req, res) => {
     if(verified) {
         let { credentialPublicKey, credentialID, counter } = registrationInfo;
         let reset_challenge = await usersQueries.UpdateUserChallenge({userID: userID, challenge: "0"});
-
-        console.log(reset_challenge);
-        // console.log(credentialID);
-        // console.log(credentialID.toString('hex'));
-        // console.log(credentialPublicKey);
-        // console.log(credentialPublicKey.toString('hex'));
 
         const resultRegisterAuthenticator = await authenticatorsQueries.registerAuthenticator({
             userID: userID,

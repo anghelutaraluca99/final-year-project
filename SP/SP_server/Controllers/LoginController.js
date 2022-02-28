@@ -1,32 +1,27 @@
-const saml = require('saml2-js');
+const { Issuer, generators } = require('openid-client');
+
 
 module.exports = async (req, res) => {
 
-    const sp_options = {
-        entity_id: "http://localhost:4000/",
-        private_key: process.env.CERT,
-        certificate: process.env.KEY,
-        assert_endpoint: "http://localhost:3000/samlProvider/"
-      };
-    const sp = new saml.ServiceProvider(sp_options);
+  const issuer = await Issuer.discover('http://localhost:3000/oidc');
 
-    const idp_options = {
-        sso_login_url: "http://localhost:3000/samlProvider",
-        sso_logout_url: "http://localhost:3000/samlProvider",
-        certificates: process.env.IDP_CERT,
-        force_authn: true,
-        sign_get_request: false,
-        allow_unencrypted_assertion: false
-    }
-    const idp = new saml.IdentityProvider(idp_options);
+  // console.log(issuer);
 
-    sp.create_login_request_url(idp, {}, function(err, login_url, request_id) {
-        if (err != null) {
-          console.log("Error: " + err);
-          return res.send(500);
-        } else {
-          console.log("Login url: " + login_url);
-          res.redirect(login_url);
-        }
-      });
+  const client = new issuer.Client({
+    client_id: 'DEMO client',
+    redirect_uris: ['https://192.168.1.111:4001'],
+    response_types: ['id_token'],
+  });
+
+  const nonce = generators.nonce();
+
+  const url = client.authorizationUrl({
+    scope: ' email ',
+    response_mode: 'form_post',
+    nonce,
+  });
+  
+  console.log(url);
+
+  return res.status(302).redirect(url);
 }

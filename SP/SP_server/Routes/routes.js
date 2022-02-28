@@ -1,13 +1,11 @@
 const router = require("express").Router();
 const {
     Login, 
-    GenerateMetadata, 
-    Assert
+    Root,
 } = require("../controllers");
 
 // router.use('/', GenerateMetadata);
-router.get("/metadata.xml", GenerateMetadata);
 router.get("/login", Login);
-router.post("/assert", Assert);
+router.post("/", Root);
 
 module.exports = router;

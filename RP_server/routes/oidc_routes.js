@@ -2,11 +2,13 @@ const router = require("express").Router();
 const { interaction } = require("../middlewares/oidc");
 const {
    Interaction,
+   LoginInteraction,
+   ConsentInteraction,
 } = require("../controllers/oidc");
 
 // Registration + authentication routes; traffic to these routes should not go through the middleware
-router.use('/:uid', Interaction);
-router.post('/:uid/login', Interaction);
-router.post('/:uid/consent', Interaction);
+router.get('/:uid', Interaction);
+router.post('/:uid/login', LoginInteraction);
+router.post('/:uid/consent', ConsentInteraction);
 
 module.exports = router;

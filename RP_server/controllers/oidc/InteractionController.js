@@ -14,12 +14,14 @@ module.exports = async (req, res) => {
         console.log("params.client_id: " + params.client_id);
         console.log("session: " + session);
         // const client = await provider.Client.find(params.client_id);
-        if(prompt.name === 'login')
-            return res.redirect('http://localhost:8080/oidc_interaction/' + uid + '/login');
+        // if(prompt.name === 'login')
+        //     return res.redirect('http://localhost:8080/oidc_interaction/' + uid + '/login');
 
-        if(prompt.name === 'consent')
-        return res.redirect('http://localhost:8080/oidc_interaction/' + uid + '/consent');
-        return;
+        // if(prompt.name === 'consent')
+        // return res.redirect('http://localhost:8080/oidc_interaction/' + uid + '/consent');
+
+        return res.redirect('http://localhost:8080/oidc_interaction/' + uid);
+
     } catch (err) {
         return (err);
     }

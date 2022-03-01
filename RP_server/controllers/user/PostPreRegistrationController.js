@@ -1,5 +1,5 @@
 const WebAuthnServer = require('@simplewebauthn/server');
-const {usersQueries} = require("../models/database_queries");
+const {usersQueries} = require("../../models/database_queries");
 
 module.exports = async (req, res) => {
 

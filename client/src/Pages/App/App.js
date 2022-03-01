@@ -9,6 +9,8 @@ import NavBar from '../Components/NavBar';
 import Home from '../Home/Home';
 import Register from '../Register/Register';
 import Login from '../Login/Login';
+import Login_oidc from '../Login/Login_oidc';
+import Consent from '../Consent/Consent';
 import Settings from '../Settings/Settings';
 import DeleteAuthenticator from '../Settings/DeleteAuthenticator';
 import Services from '../Services/Services';
@@ -26,6 +28,10 @@ function App() {
                   <Route exact path='/settings' element={<Settings/>}/>
                   <Route exact path='/deleteAuthenticator' element={<DeleteAuthenticator/>}/>
                   <Route exact path='/services' element={<Services/>}/>
+                  
+                  
+                  <Route exact path='/oidc_interaction/:uid/login' element={<Login_oidc/>}/>
+                  <Route exact path='/oidc_interaction/:uid/consent' element={<Consent/>}/>
               </Routes>
           </div>
       </Router>

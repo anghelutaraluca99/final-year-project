@@ -3,10 +3,9 @@ module.exports =  {
     clients: [{
       client_id: 'DEMO client',
       // application_type: 'web',
-      redirect_uris:['https://192.168.1.111:4001'],
+      redirect_uris:['http://localhost:4001/', 'http://localhost:4000/'],
       token_endpoint_auth_method: 'none',
-      response_types: ['id_token'],
-      grant_types: ['implicit'],
+      response_types: ['code'],
     }],
     claims: {
       address: ['address'],
@@ -15,7 +14,7 @@ module.exports =  {
     },
     interactions: {
       url(ctx, interaction) { // eslint-disable-line no-unused-vars
-        return `http://localhost:8080/interaction/${interaction.uid}`;
+        return `/oidc_interaction/${interaction.uid}`;
       },
     },
     features: {

@@ -34,6 +34,13 @@ const configurationOidc = require('./oidc/configuration/oidc_config');
 //     },
 //   };
 const oidc = new Provider('http://localhost:3000', configurationOidc);
+const findAccount = (id) => {
+  return {
+    accountId: id,
+    claims:{ sub: id },
+  }
+}
+oidc.findAccount = findAccount
 
 // Middlewares
 const whitelist = ['http://localhost:8080', 'http://localhost:4000', 'http://localhost:4001'];
@@ -53,22 +60,12 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes
+app.use("/oidc_interaction", (req, res, next) => {
+  req.oidc = oidc;
+  next();
+});
 app.use("/oidc", oidc.callback());
 app.use("/", router);
-
-//OIDC routes, TODO :: move to routes
-app.get('/interaction/:uid', async (req, res) => {
-  console.log("Entered GET");
-  const details = await oidc.interactionDetails(req, res);
-  console.log("GET result:" + details);
-});
-
-app.post('/interaction/:uid/login', async (req, res) => {
-  console.log("Entered POST");
-  const result = oidc.interactionFinished(req, res, result); // result object below
-  console.log("POST result: " + result);
-});
-
 
 // Connection to database
 mongoose.connect(process.env.DB_URI, {

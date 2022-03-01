@@ -1,4 +1,4 @@
-const { extractToken, decodeToken } = require("../utils/jwtUtils");
+const { extractToken, decodeToken } = require("../../utils/jwtUtils");
 
 module.exports = (req, res, next) => {
     const token = extractToken(req);

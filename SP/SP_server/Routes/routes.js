@@ -6,6 +6,6 @@ const {
 
 // router.use('/', GenerateMetadata);
 router.get("/login", Login);
-router.post("/", Root);
+router.get("/", Root);
 
 module.exports = router;

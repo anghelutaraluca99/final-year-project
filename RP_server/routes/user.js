@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { requireAuth } = require("../middlewares");
+const { requireAuth } = require("../middlewares/user");
 const {
     PostRegistration,
     PostPreRegistration,
@@ -12,7 +12,7 @@ const {
     RegisterNewAuthenticator,
     Services,
     SAMLAssertion,
-} = require("../controllers");
+} = require("../controllers/user");
 
 // Registration + authentication routes; traffic to these routes should not go through the middleware
 router.post('/pre_register', PostPreRegistration);
@@ -29,7 +29,6 @@ router.post('/authenticators', DeleteAuthenticator);
 router.post('/pre_register_new_authenticator', PreRegisterNewAuthenticator);
 router.post('/register_new_authenticator', RegisterNewAuthenticator);
 router.get('/services', Services); // lists available services
-router.get('/saml_assertion', SAMLAssertion); // gets saml assertion
 router.get('/', GetUser);
 
 module.exports = router;

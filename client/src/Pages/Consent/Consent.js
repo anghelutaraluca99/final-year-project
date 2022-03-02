@@ -3,8 +3,6 @@ import './Consent.css';
 
 function Consent() {
 
-    const [visible, setVisible] = useState(false);
-
     let {uid} = useParams();
     console.log(uid);
 

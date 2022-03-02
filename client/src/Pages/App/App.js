@@ -29,10 +29,6 @@ function App() {
                   <Route exact path='/settings' element={<Settings/>}/>
                   <Route exact path='/deleteAuthenticator' element={<DeleteAuthenticator/>}/>
                   <Route exact path='/services' element={<Services/>}/>
-                  
-                  
-                  <Route exact path='/oidc_interaction/:uid/login' element={<Login_oidc/>}/>
-                  <Route exact path='/oidc_interaction/:uid/consent' element={<Consent/>}/>
                   <Route exact path='/oidc_interaction/:uid/' element={<Interaction/>}/>
               </Routes>
           </div>

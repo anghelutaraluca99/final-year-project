@@ -17,6 +17,11 @@ module.exports =  {
         return `/oidc_interaction/${interaction.uid}`;
       },
     },
+
+    cookies: {
+      keys: ['some secret key', 'and also the old rotated away some time ago', 'and one more'],
+    },
+
     features: {
       devInteractions: { enabled: false }
     },

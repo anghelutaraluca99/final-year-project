@@ -11,7 +11,7 @@ function Services() {
     const [services, setServices] = useState(null);
 
     const getServices = async () => {
-        let resp = await fetch('http://localhost:3000/services', {
+        let resp = await fetch('http://localhost:3000/user/services', {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,
@@ -22,17 +22,17 @@ function Services() {
     }
 
     const getAssertion = async () => {
-        let resp = await fetch('http://localhost:3000/saml_assertion', {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("jwt_token")}`
-            },
-        });
-        let assertion = await resp.text();
-        console.log("ASSERTION " + assertion);
-        let encoded_assertion = encodeURI(assertion);
-        console.log("ENCODED ASSERTION " + encoded_assertion);
-        return assertion;
+    //     let resp = await fetch('http://localhost:3000/saml_assertion', {
+    //         method: 'GET',
+    //         headers: {
+    //             Authorization: `Bearer ${localStorage.getItem("jwt_token")}`
+    //         },
+    //     });
+    //     let assertion = await resp.text();
+    //     console.log("ASSERTION " + assertion);
+    //     let encoded_assertion = encodeURI(assertion);
+    //     console.log("ENCODED ASSERTION " + encoded_assertion);
+    //     return assertion;
     }
 
     const selectService = async (e) => {

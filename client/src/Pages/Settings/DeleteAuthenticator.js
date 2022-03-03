@@ -19,7 +19,7 @@ function DeleteAuthenticator() {
     }
 
     useEffect(() => {
-        fetch('http://localhost:3000/authenticators', {
+        fetch('http://localhost:3000/user/authenticators', {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,
@@ -38,7 +38,7 @@ function DeleteAuthenticator() {
             let respObj = {};
             respObj.credentialID = toDelete;
             console.log(respObj);
-                res = await fetch('http://localhost:3000/authenticators', {
+                res = await fetch('http://localhost:3000/user/authenticators', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,

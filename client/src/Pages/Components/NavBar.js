@@ -32,12 +32,12 @@ function NavBar() {
             <nav>
                 <h3>Final Year Project</h3>
                 <ul className="nav_links">
-                    <Link style={navStyle} to="/register">
+                    {!visible && <Link style={navStyle} to="/register">
                         <li>Register</li>
-                    </Link>
-                    <Link style={navStyle} to="/authenticate">
+                    </Link>}
+                    {!visible && <Link style={navStyle} to="/authenticate">
                         <li>Authenticate</li>
-                    </Link>
+                    </Link>}
                     {visible && <Link style={navStyle} to="/settings">
                         <li>Settings</li>
                     </Link>}

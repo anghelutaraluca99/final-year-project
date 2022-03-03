@@ -1,6 +1,8 @@
 import { useParams } from 'react-router-dom';
 import {useState, useEffect} from 'react';
 import {startAuthentication} from '@simplewebauthn/browser';
+import { useNavigate } from "react-router-dom";
+// import Cookies from 'js-cookie';
 import './Interaction.css';
 import GetUser from '../../Utils/GetUser';
 
@@ -13,9 +15,10 @@ function Interaction() {
     const [username, setUsername] = useState(null);
     const [name, setName] = useState(null);
 
+    const navigate = useNavigate();
 
     let {uid} = useParams();
-    console.log(uid);
+    // console.log(uid);
 
     const digestApiResponse = async (resp) => {
 
@@ -36,7 +39,7 @@ function Interaction() {
         respObj.username = username;
 
         // GET authentication options
-        const resp = await fetch('http://localhost:3000/pre_authenticate', {
+        const resp = await fetch('http://localhost:3000/user/pre_authenticate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -53,7 +56,7 @@ function Interaction() {
             throw error;
         }
 
-        const verificationResp = await fetch('http://localhost:3000/authenticate', {
+        const verificationResp = await fetch('http://localhost:3000/user/authenticate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -69,28 +72,36 @@ function Interaction() {
             setUserIsLoggedIn(true);
         }
 
-        const oidc_resp = await fetch('http://localhost:3000/oidc_interaction/' + uid + '/login', {
+        const new_uid = await fetch('http://localhost:3000/oidc_interaction/' + uid + '/login', {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,
             },
+            credentials: 'include',
         });
+        const data = await new_uid.json();
+        
+        console.log('response login oidc: ', JSON.stringify(data));
 
-        console.log(oidc_resp);
+        const parsed_new_uid = data.uid;
+
+        navigate("/oidc_interaction/" + parsed_new_uid);
     }
 
     const handleConsent = async (e) => {
 
         e.preventDefault();
-
-        let resp = await fetch('http://localhost:3000/oidc_interaction/' + uid + '/consent', {
+        // const interactionCookie = Cookies.get('interaction');
+        // console.log(interactionCookie);
+        const resp = await fetch('http://localhost:3000/oidc_interaction/' + uid + '/consent', {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,
             },
+            credentials: 'include',
         });
 
-        console.log(resp);
+        // console.log(resp);
 
     }
 
@@ -118,9 +129,6 @@ function Interaction() {
                 <button onClick={handleConsent}>Give consent</button>
             </div>}
         </div>
-
-
-
     );
 }
 

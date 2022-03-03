@@ -1,6 +1,6 @@
 async function GetUser() {
 
-    let resp = await fetch('http://localhost:3000/', {
+    let resp = await fetch('http://localhost:3000/user', {
         method: 'GET',
         headers: {
             Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,

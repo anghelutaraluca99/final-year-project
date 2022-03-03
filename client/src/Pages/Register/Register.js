@@ -17,7 +17,7 @@ function Register() {
 
         // GET registration options from the endpoint that calls
         // @simplewebauthn/server -> generateRegistrationOptions()
-        const resp = await fetch('http://localhost:3000/pre_register', {
+        const resp = await fetch('http://localhost:3000/user/pre_register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ function Register() {
 
             // POST the response to the endpoint that calls
             // @simplewebauthn/server -> verifyRegistrationResponse()
-            const verificationResp = await fetch('http://localhost:3000/register', {
+            const verificationResp = await fetch('http://localhost:3000/user/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

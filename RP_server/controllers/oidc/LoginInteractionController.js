@@ -2,13 +2,12 @@ const { extractToken, decodeToken } = require("../../utils/jwtUtils");
 
 module.exports = async (req, res) => {
     const oidc = req.oidc;
+    try {
+        const interactionDetails = await oidc.interactionDetails(req, res);
+        console.log("login controller - INTERACTION DETAILS - " + JSON.stringify(interactionDetails));
 
-    // try {
-        const { prompt: { name } } = await oidc.interactionDetails(req, res);
-        assert.equal(name, 'login');
-
+        // Get account
         let account;
-
         const token = extractToken(req);
         if (token) {
             account = decodeToken(token, process.env.JWT_SECRET)?.payload;
@@ -19,9 +18,11 @@ module.exports = async (req, res) => {
                 accountId: account.email,
             },
         };
-
         await oidc.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
-    // } catch (err) {
-    //     return res.status(500).send(err);
-    // }
+
+        // res.status(200).send(respObj);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send(err);
+    }
 }

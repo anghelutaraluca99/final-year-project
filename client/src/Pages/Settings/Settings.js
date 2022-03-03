@@ -27,7 +27,7 @@ function Settings() {
     let handleRegistration = async () => {
         // GET registration options from the endpoint that calls
         // @simplewebauthn/server -> generateRegistrationOptions()
-        const resp = await fetch('http://localhost:3000/pre_register_new_authenticator', {
+        const resp = await fetch('http://localhost:3000/user/pre_register_new_authenticator', {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,
@@ -56,7 +56,7 @@ function Settings() {
 
             // POST the response to the endpoint that calls
             // @simplewebauthn/server -> verifyRegistrationResponse()
-            const verificationResp = await fetch('http://localhost:3000/register_new_authenticator', {
+            const verificationResp = await fetch('http://localhost:3000/user/register_new_authenticator', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,

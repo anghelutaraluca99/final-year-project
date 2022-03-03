@@ -19,7 +19,7 @@ function Login() {
         respObj.username = username;
 
         // GET authentication options
-        const resp = await fetch('http://localhost:3000/pre_authenticate', {
+        const resp = await fetch('http://localhost:3000/user/pre_authenticate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ function Login() {
             throw error;
         }
 
-        const verificationResp = await fetch('http://localhost:3000/authenticate', {
+        const verificationResp = await fetch('http://localhost:3000/user/authenticate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

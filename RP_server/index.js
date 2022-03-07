@@ -21,7 +21,6 @@ const oidc = new Provider('http://localhost:3000', configurationOidc);
 const whitelist = ['http://localhost:3000', 'http://localhost:8080', 'http://localhost:4000', 'http://localhost:4001'];
 const corsOptions = {
   origin: function (origin, callback) {
-    console.log("Origin: " + origin);
     if (whitelist.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
@@ -36,7 +35,6 @@ app.use(cors(corsOptions));
 // Middleware to set Access-Control-Allow-Origin header
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:8080");
-  // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
 

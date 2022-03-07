@@ -21,6 +21,5 @@ module.exports = async (req, res) => {
 
     // Resets challenge for user
     let resNewChallenge = await usersQueries.UpdateUserChallenge({userID: userID, challenge: options.challenge});
-    console.log(resNewChallenge);
     res.send(options);
 }

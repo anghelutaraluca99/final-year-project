@@ -30,8 +30,6 @@ module.exports = async (req, res) => {
     }
 
     const { verified, authenticationInfo } = verification;
-    console.log(verified);
-    console.log(authenticationInfo);
 
     if (verified) {
         // authorised

@@ -9,13 +9,10 @@ import NavBar from '../Components/NavBar';
 import Home from '../Home/Home';
 import Register from '../Register/Register';
 import Login from '../Login/Login';
-import Login_oidc from '../Login/Login_oidc';
-import Consent from '../Consent/Consent';
 import Interaction from '../Interaction/Interaction';
 import Settings from '../Settings/Settings';
 import DeleteAuthenticator from '../Settings/DeleteAuthenticator';
 import Services from '../Services/Services';
-
 
 function App() {
   return (

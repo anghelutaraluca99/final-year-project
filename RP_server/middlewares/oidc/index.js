@@ -1,1 +1,0 @@
-exports.interaction = require("./interaction.js");

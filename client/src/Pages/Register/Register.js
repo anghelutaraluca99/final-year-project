@@ -1,69 +1,34 @@
-import React, {useState} from 'react';
 import './Register.css';
-import {startRegistration} from '@simplewebauthn/browser';
+import React, {useState} from 'react';
+import { Register } from '../../Utils/WebAuthnUtils';
+import { useNavigate } from "react-router-dom";
+import GetFingerprint from '../../Utils/GetFingerprint';
 
-function Register() {
+function RegistrationPage() {
+
     const [email, setEmail] = useState(null);
     const [username, setUsername] = useState(null);
     const [name, setName] = useState(null);
+    const navigate = useNavigate();
 
     async function handleSubmit(e){
         e.preventDefault();
 
-        let respObj = {};
-        respObj.name = name;
-        respObj.email = email;
-        respObj.username = username;
+        const user = {
+            name: name,
+            email: email,
+            username: username,
+        };
+        const registration_successful = await Register(user);
+        
+        console.log("registration_successful: ", registration_successful);
 
-        // GET registration options from the endpoint that calls
-        // @simplewebauthn/server -> generateRegistrationOptions()
-        const resp = await fetch('http://localhost:3000/user/pre_register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(respObj),
-        });
-
-        let parsedResp = await resp.json();
-
-        if(typeof(parsedResp?.error) !== "undefined") {
-            // If response contains an error
-            console.log(parsedResp.error);
+        if(registration_successful){
+            // Send fingerprint to BE - need to be logged in first
+            const fingerprint = await GetFingerprint();
+            navigate("/");
         } else {
-            // eslint-disable-next-line
-            let attResp;
-            try {
-                // Pass the options to the authenticator and wait for a response
-                respObj.attResp = await startRegistration(parsedResp);
-            } catch (error) {
-                if (error.name === 'InvalidStateError') {
-                    console.log("Error: Authenticator was probably already registered by user");
-                } else {
-                    console.log(error);
-                }
-                throw error;
-            }
-
-            // POST the response to the endpoint that calls
-            // @simplewebauthn/server -> verifyRegistrationResponse()
-            const verificationResp = await fetch('http://localhost:3000/user/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(respObj),
-            });
-
-            // Wait for the results of verification
-            const verificationJSON = await verificationResp.json();
-
-            // Log answer saved in 'verified'
-            if (verificationJSON && verificationJSON.verified) {
-                console.log("Success!!!!")
-            } else {
-                console.log(verificationJSON);
-            }
+            //TODO :: Display error
         }
     }
 
@@ -84,4 +49,4 @@ function Register() {
     );
 }
 
-export default Register;
+export default RegistrationPage;

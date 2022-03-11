@@ -1,11 +1,11 @@
+import './Login.css';
 import React, {useState} from 'react';
 import { useNavigate } from "react-router-dom";
-import {startAuthentication} from '@simplewebauthn/browser';
+import { Authenticate } from '../../Utils/WebAuthnUtils';
 import GetFingerprint from '../../Utils/GetFingerprint';
 
-import './Login.css';
 
-function Login() {
+function LoginPage() {
 
     const [email, setEmail] = useState(null);
     const [username, setUsername] = useState(null);
@@ -15,53 +15,21 @@ function Login() {
     async function handleSubmit(e) {
         e.preventDefault();
 
-        let respObj = {};
-        respObj.name = name;
-        respObj.email = email;
-        respObj.username = username;
+        const user = {
+            name: name,
+            email: email,
+            username: username,
+            };
+        let authentication_successful = await Authenticate(user);
 
-        // GET authentication options
-        const resp = await fetch('http://localhost:3000/user/pre_authenticate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(respObj),
-        });
-
-        // eslint-disable-next-line
-        let asseResp;
-        try {
-            // Pass the options to the authenticator and wait for a response
-            respObj.asseResp = await startAuthentication(await resp.json());
-        } catch (error) {
-            throw error;
+        if(authentication_successful){
+            // Send fingerprint to BE
+            const fingerprint = await GetFingerprint();
+            navigate("/");
+        } else {
+            //TODO :: Display error
         }
-
-        const verificationResp = await fetch('http://localhost:3000/user/authenticate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(respObj),
-        });
-
-        // Wait for the results of verification
-        const responseJSON = await verificationResp.json();
-        console.log(responseJSON);
-
-        // Put jtw login token in local storage
-        if(responseJSON?.token) {
-            localStorage.setItem("jwt_token", responseJSON.token);
-            localStorage.setItem("username", responseJSON.user.username);
-        }
-
-        // Send fignerprint to backend
-        const fingerprint = await GetFingerprint();
-
-        navigate("/");
     }
-
 
     return (
         <div>
@@ -80,4 +48,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default LoginPage;

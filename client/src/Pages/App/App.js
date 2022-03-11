@@ -6,13 +6,12 @@ import {
 
 import './App.css';
 import NavBar from '../Components/NavBar';
-import Home from '../Home/Home';
-import Register from '../Register/Register';
-import Login from '../Login/Login';
-import Interaction from '../Interaction/Interaction';
+import HomePage from '../Home/Home';
+import RegistrationPage from '../Register/Register';
+import LoginPage from '../Login/Login';
 import OIDC_login from '../Interaction/Login';
 import OIDC_consent from '../Interaction/Consent';
-import Settings from '../Settings/Settings';
+import SettingsPage from '../Settings/Settings';
 import DeleteAuthenticator from '../Settings/DeleteAuthenticator';
 
 function App() {
@@ -21,14 +20,13 @@ function App() {
           <div className="App">
               <NavBar />
               <Routes>
-                  <Route exact path='/' element={<Home/>}/>
-                  <Route exact path='/register' element={<Register/>}/>
-                  <Route exact path='/authenticate' element={<Login/>}/>
-                  <Route exact path='/settings' element={<Settings/>}/>
+                  <Route exact path='/' element={<HomePage/>}/>
+                  <Route exact path='/register' element={<RegistrationPage/>}/>
+                  <Route exact path='/authenticate' element={<LoginPage/>}/>
+                  <Route exact path='/settings' element={<SettingsPage/>}/>
                   <Route exact path='/deleteAuthenticator' element={<DeleteAuthenticator/>}/>
-                  {/* <Route exact path='/oidc_interaction/:uid/' element={<Interaction/>}/> */}
                   <Route exact path='/oidc_interaction/:uid/login' element={<OIDC_login/>}/>
-                  <Route exact path='/oidc_interaction/:uid/consent' element={<OIDC_consent/>}/>
+                  <Route exact path='/oidc_interaction/:uid/consent/:scope' element={<OIDC_consent/>}/>
               </Routes>
           </div>
       </Router>

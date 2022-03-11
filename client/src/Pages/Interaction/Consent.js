@@ -3,8 +3,8 @@ import './Interaction.css';
 
 function Interaction() {
 
-  let {uid} = useParams();
-  
+  let {uid, scope} = useParams();
+
   const handleConsent = async (e) => {
 
     e.preventDefault();
@@ -25,7 +25,8 @@ function Interaction() {
   return (
     <div>
       <div>
-        <h3> Consent Page </h3><br/>
+        <h3> Single Sign-On Consent Page </h3>
+        <p> Allow application to gain access to your {scope} ?</p>
         <button onClick={handleConsent}>Give consent</button>
       </div>
     </div>

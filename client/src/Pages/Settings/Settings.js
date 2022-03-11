@@ -1,11 +1,11 @@
+import './Settings.css';
 import React from 'react';
 import { useNavigate } from "react-router-dom";
-import {startRegistration} from '@simplewebauthn/browser';
-import './Settings.css';
 import GetUser from '../../Utils/GetUser';
 import {useState, useEffect} from 'react';
+import { RegisterNewAuthenticator } from "../../Utils/WebAuthnUtils"
 
-function Settings() {
+function SettingsPage() {
     
     const navigate = useNavigate();
     const [visible, setVisible] = useState(false);
@@ -25,55 +25,11 @@ function Settings() {
 
 
     let handleRegistration = async () => {
-        // GET registration options from the endpoint that calls
-        // @simplewebauthn/server -> generateRegistrationOptions()
-        const resp = await fetch('http://localhost:3000/user/pre_register_new_authenticator', {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,
-            },
-        });
-
-        let parsedResp = await resp.json();
-
-        if(typeof(parsedResp?.error) !== "undefined") {
-            // If response contains an error
-            console.log(parsedResp.error);
+        let registration_successful = await RegisterNewAuthenticator();
+        if(registration_successful) {
+            // show successful
         } else {
-            // eslint-disable-next-line
-            let attResp;
-            try {
-                // Pass the options to the authenticator and wait for a response
-                attResp = await startRegistration(parsedResp);
-            } catch (error) {
-                if (error.name === 'InvalidStateError') {
-                    console.log("Error: Authenticator was probably already registered by user");
-                } else {
-                    console.log(error);
-                }
-                throw error;
-            }
-
-            // POST the response to the endpoint that calls
-            // @simplewebauthn/server -> verifyRegistrationResponse()
-            const verificationResp = await fetch('http://localhost:3000/user/register_new_authenticator', {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({attResp: attResp}),
-            });
-
-            // Wait for the results of verification
-            const verificationJSON = await verificationResp.json();
-            console.log(verificationJSON);
-            // Log answer saved in 'verified'
-            if (verificationJSON && verificationJSON.verified) {
-                console.log("Success!!!!")
-            } else {
-                console.log(verificationJSON);
-            }
+            //display error
         }
     }
 
@@ -102,4 +58,4 @@ function Settings() {
     );
 }
 
-export default Settings;
+export default SettingsPage;

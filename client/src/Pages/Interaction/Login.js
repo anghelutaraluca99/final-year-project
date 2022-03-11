@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import {useState, useEffect} from 'react';
 import {startAuthentication} from '@simplewebauthn/browser';
 import { useNavigate } from "react-router-dom";
+import { Authenticate } from '../../Utils/WebAuthnUtils';
 import './Interaction.css';
 
 function OIDC_Login() {
@@ -66,7 +67,7 @@ function OIDC_Login() {
       email: email,
       username: username,
     };
-    let authentication_successful = await handleAuthentication(user);
+    let authentication_successful = await Authenticate(user);
 
     if(authentication_successful) {
       // reply to OIDC endpoint
@@ -81,9 +82,8 @@ function OIDC_Login() {
       // Navigate to consent page
       const data = await new_uid.json();
       const parsed_new_uid = data.uid;
-      navigate("/oidc_interaction/" + parsed_new_uid + "/consent", {
-        scope:data.scope,
-      });
+      const parsed_scope = data.scope;
+      navigate("/oidc_interaction/" + parsed_new_uid + "/consent/" + parsed_scope);
 
     } else {
       console.log("-------- FIDO authentication failed.")

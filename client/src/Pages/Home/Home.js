@@ -3,7 +3,7 @@ import {useState, useEffect} from 'react';
 import './Home.css';
 import GetUser from '../../Utils/GetUser';
 
-function Home() {
+function HomePage() {
     const [message, setMessage] = useState(null);
 
     const digestApiResponse = async (resp) => {
@@ -27,4 +27,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default HomePage;

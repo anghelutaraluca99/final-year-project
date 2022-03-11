@@ -1,0 +1,166 @@
+import {startRegistration, startAuthentication} from '@simplewebauthn/browser';
+
+// Takes user as parameter; user should have at least user.email set
+export const Authenticate = async (user) => {
+  let respObj = {};
+  respObj.name = user?.name;
+  respObj.email = user?.email;
+  respObj.username = user?.username;
+
+  // GET authentication options
+  const resp = await fetch('http://localhost:3000/user/pre_authenticate', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(respObj),
+  });
+
+  // eslint-disable-next-line
+  let asseResp;
+  try {
+    // Pass the options to the authenticator and wait for a response
+    respObj.asseResp = await startAuthentication(await resp.json());
+  } catch (error) {
+    throw error;
+  }
+
+  const verificationResp = await fetch('http://localhost:3000/user/authenticate', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(respObj),
+  });
+
+  // Wait for the results of verification
+  const responseJSON = await verificationResp.json();
+  console.log("Authentication response: ", responseJSON);
+  if(responseJSON?.token) {
+    localStorage.setItem("jwt_token", responseJSON.token);
+    return true;
+  }
+  return false;
+}
+
+export const Register = async (user) => {
+
+  let respObj = {};
+  respObj.name = user?.name;
+  respObj.email = user?.email;
+  respObj.username = user?.username;
+
+  // GET registration options from the endpoint that calls
+  // @simplewebauthn/server -> generateRegistrationOptions()
+  const resp = await fetch('http://localhost:3000/user/pre_register', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(respObj),
+  });
+
+  // Check for errors in response
+  let parsedResp = await resp.json();
+  if(typeof(parsedResp?.error) !== "undefined") {
+      // If response contains an error
+      console.log(parsedResp.error);
+      return false;
+  }
+
+  // eslint-disable-next-line
+  let attResp;
+  try {
+      // Pass the options to the authenticator and wait for a response
+      
+      respObj.attResp = await startRegistration(parsedResp);
+  } catch (error) {
+      if (error.name === 'InvalidStateError') {
+          console.log("Error: Authenticator was probably already registered by user");
+      } else {
+          console.log(error);
+      }
+      return false;
+  }
+
+
+  // POST the response to the endpoint that calls
+  // @simplewebauthn/server -> verifyRegistrationResponse()
+  const verificationResp = await fetch('http://localhost:3000/user/register', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(respObj),
+  });
+
+  // Wait for the results of verification
+  const verificationJSON = await verificationResp.json();
+  console.log("--------- verificationJSON: " + JSON.stringify(verificationJSON, 0, 2));
+  // Log answer saved in 'verified'
+  if (!verificationJSON.error) {
+    if(verificationJSON?.token) {
+      localStorage.setItem("jwt_token", verificationJSON.token);
+      return true;
+    }
+    return true;
+  } else {
+      return false;
+  }
+}
+
+export const RegisterNewAuthenticator = async (user) => {
+
+    // GET registration options from the endpoint that calls
+  // @simplewebauthn/server -> generateRegistrationOptions()
+  const resp = await fetch('http://localhost:3000/user/pre_register_new_authenticator', {
+    method: 'POST',
+    headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,
+    },
+  });
+
+  let parsedResp = await resp.json();
+
+  if(typeof(parsedResp?.error) !== "undefined") {
+    // If response contains an error
+  console.log(parsedResp.error);
+  } else {
+    // eslint-disable-next-line
+    let attResp;
+    try {
+      // Pass the options to the authenticator and wait for a response
+    attResp = await startRegistration(parsedResp);
+    } catch (error) {
+      if (error.name === 'InvalidStateError') {
+        console.log("Error: Authenticator was probably already registered by user");
+      } else {
+        console.log(error);
+      }
+      return false;
+    }
+
+    // POST the response to the endpoint that calls
+    // @simplewebauthn/server -> verifyRegistrationResponse()
+    const verificationResp = await fetch('http://localhost:3000/user/register_new_authenticator', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({attResp: attResp}),
+    });
+
+    // Wait for the results of verification
+    const verificationJSON = await verificationResp.json();
+    // Log answer saved in 'verified'
+    if (!verificationJSON.error) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+
+

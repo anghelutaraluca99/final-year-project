@@ -10,16 +10,17 @@ module.exports = async (req, res) => {
     const existing_fingerprints = await fingerprintsQueries.getFingerprints(email);
 
     // Compare received fingerprint with existing fingerprints
-    const no_of_records = existing_fingerprints.fingerprints.length;
-    let no_of_matches = 0;
+    if(existing_fingerprints){
+      const no_of_records = existing_fingerprints.fingerprints.length;
+      let no_of_matches = 0;
 
-    for (let i = 0; i < no_of_records; i++) {
-      let recorded_fingerprint = existing_fingerprints.fingerprints[i];
-      if (recorded_fingerprint.visitorId === fingerprint.visitorId)
-        no_of_matches++;
+      for (let i = 0; i < no_of_records; i++) {
+        let recorded_fingerprint = existing_fingerprints.fingerprints[i];
+        if (recorded_fingerprint.visitorId === fingerprint.visitorId)
+          no_of_matches++;
+      }
+      console.log("Matches " + no_of_matches + " records out of " + no_of_records);
     }
-    console.log("Matches " + no_of_matches + " records out of " + no_of_records);
-
     // Save fingerprint in DB
     const response = await fingerprintsQueries.addFingerprint(email, fingerprint);
 

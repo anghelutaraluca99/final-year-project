@@ -34,6 +34,7 @@ module.exports = async (req, res) => {
             credentialID: credentialID.toString('hex'),
             credentialPublicKey: credentialPublicKey.toString('hex')
         });
+        return res.status(200).send({ messsage: "Authenticator registered successfully" });
     }
-    return { verified };
+    return res.status(500).send({ error: "Authentication registration failed. Unknown error." });
 }

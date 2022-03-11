@@ -81,7 +81,9 @@ function OIDC_Login() {
       // Navigate to consent page
       const data = await new_uid.json();
       const parsed_new_uid = data.uid;
-      navigate("/oidc_interaction/" + parsed_new_uid + "/consent");
+      navigate("/oidc_interaction/" + parsed_new_uid + "/consent", {
+        scope:data.scope,
+      });
 
     } else {
       console.log("-------- FIDO authentication failed.")

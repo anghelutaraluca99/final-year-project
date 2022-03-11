@@ -5,9 +5,7 @@ exports.PostAuthentication = require("./PostAuthenticationController");
 exports.GetUser = require("./GetUserController");
 exports.AuthenticatorsList = require("./AuthenticatorsListController.js");
 exports.DeleteAuthenticator = require("./DeleteAuthenticatorController.js");
-
 exports.PreRegisterNewAuthenticator = require("./PreRegisterNewAuthenticatorController.js");
 exports.RegisterNewAuthenticator = require("./RegisterNewAuthenticatorController.js");
-exports.Services = require("./ServicesController.js");
 exports.Fingerprint = require("./PostFingerprintController.js");
 exports.CompareFingerprint = require("./CompareFingerprintController.js");

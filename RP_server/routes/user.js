@@ -10,7 +10,6 @@ const {
     DeleteAuthenticator,
     PreRegisterNewAuthenticator,
     RegisterNewAuthenticator,
-    Services,
     Fingerprint
 } = require("../controllers/user");
 
@@ -24,15 +23,12 @@ router.post('/authenticate', PostAuthentication);
 // Middleware to check for JWT token
 router.use('/', requireAuth);
 
-
 // Rest of the traffic goes through the the middleware to check if user is authenticated
 router.get('/authenticators', AuthenticatorsList);
 router.post('/authenticators', DeleteAuthenticator);
 
 router.post('/pre_register_new_authenticator', PreRegisterNewAuthenticator);
 router.post('/register_new_authenticator', RegisterNewAuthenticator);
-
-router.get('/services', Services); 
 
 router.post('/fingerprint', Fingerprint);
 

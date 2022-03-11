@@ -41,9 +41,6 @@ function NavBar() {
                     {visible && <Link style={navStyle} to="/settings">
                         <li>Settings</li>
                     </Link>}
-                    {visible && <Link style={navStyle} to="/services">
-                        <li>Services</li>
-                    </Link>}
                 </ul>
             </nav>
         </div>

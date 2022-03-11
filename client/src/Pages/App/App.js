@@ -10,6 +10,8 @@ import Home from '../Home/Home';
 import Register from '../Register/Register';
 import Login from '../Login/Login';
 import Interaction from '../Interaction/Interaction';
+import OIDC_login from '../Interaction/Login';
+import OIDC_consent from '../Interaction/Consent';
 import Settings from '../Settings/Settings';
 import DeleteAuthenticator from '../Settings/DeleteAuthenticator';
 
@@ -24,7 +26,9 @@ function App() {
                   <Route exact path='/authenticate' element={<Login/>}/>
                   <Route exact path='/settings' element={<Settings/>}/>
                   <Route exact path='/deleteAuthenticator' element={<DeleteAuthenticator/>}/>
-                  <Route exact path='/oidc_interaction/:uid/' element={<Interaction/>}/>
+                  {/* <Route exact path='/oidc_interaction/:uid/' element={<Interaction/>}/> */}
+                  <Route exact path='/oidc_interaction/:uid/login' element={<OIDC_login/>}/>
+                  <Route exact path='/oidc_interaction/:uid/consent' element={<OIDC_consent/>}/>
               </Routes>
           </div>
       </Router>

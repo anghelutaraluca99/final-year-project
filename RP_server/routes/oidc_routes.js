@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const { interaction } = require("../middlewares/oidc");
 const {
    Interaction,
    LoginInteraction,

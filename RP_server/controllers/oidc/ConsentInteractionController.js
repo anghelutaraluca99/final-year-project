@@ -5,7 +5,6 @@ module.exports = async (req, res) => {
 
     try {
         const interactionDetails = await oidc.interactionDetails(req, res);
-        console.log("Consent controller - INTERACTION DETAILS - " + JSON.stringify(interactionDetails));
 
         const { prompt: { name, details }, params, session: { accountId } } = interactionDetails;
         
@@ -13,10 +12,10 @@ module.exports = async (req, res) => {
         let grant;
 
         if (grantId) {
-            // we'll be modifying existing grant in existing session
+            // modifying existing grant in existing session
             grant = await oidc.Grant.find(grantId);
         } else {
-            // we're establishing a new grant
+            // establishing a new grant
             grant = new oidc.Grant({
             accountId,
             clientId: params.client_id,
@@ -40,14 +39,14 @@ module.exports = async (req, res) => {
 
         const consent = {};
         if (!interactionDetails.grantId) {
-            // we don't have to pass grantId to consent, we're just modifying existing one
+            // modifying existing grantId
             consent.grantId = grantId;
         }
 
         const result = { consent };
-        console.log('--- consent result before int finished', JSON.stringify(grant,0,2));
         await oidc.interactionFinished(req, res, result, { mergeWithLastSubmission: true });
-        console.log('---consent interaction finished');
+
+        // No need to return response as oidc.interactionFinished handles that part
 
     } catch (err) {
         console.log(err);

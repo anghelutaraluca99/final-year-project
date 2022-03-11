@@ -4,7 +4,6 @@ module.exports = async (req, res) => {
     const oidc = req.oidc;
     try {
         const interactionDetails = await oidc.interactionDetails(req, res);
-        console.log("login controller - INTERACTION DETAILS - " + JSON.stringify(interactionDetails));
 
         // Get account
         let account;
@@ -20,7 +19,8 @@ module.exports = async (req, res) => {
         };
         await oidc.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
 
-        // res.status(200).send(respObj);
+        // No need to return response as oidc.interactionFinished handles that part
+
     } catch (err) {
         console.log(err);
         return res.status(500).send(err);

@@ -18,7 +18,7 @@ const oidc = new Provider('http://localhost:3000', configurationOidc);
 // MIDDLEWARES
 
 // CORS middleware
-const whitelist = ['http://localhost:3000', 'http://localhost:8080', 'http://localhost:4000', 'http://localhost:4001'];
+const whitelist = ['http://localhost:3000', 'http://localhost:8080', 'http://localhost:4000', 'http://localhost:4001', 'null'];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -27,10 +27,10 @@ const corsOptions = {
       callback(new Error('Origin ' + origin + ' not allowed by CORS'));
     }
   },
-  // preflightContinue: true,
   credentials: true,
 };
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Middleware to set Access-Control-Allow-Origin header
 app.use(function(req, res, next) {
@@ -42,7 +42,7 @@ app.use(function(req, res, next) {
 app.use(express.json());
 app.use(cookieParser());
 
-// Middleware to pass oidc object
+// Middleware to pass oidc as object
 app.use("/oidc_interaction", (req, res, next) => {
   req.oidc = oidc;
   next();

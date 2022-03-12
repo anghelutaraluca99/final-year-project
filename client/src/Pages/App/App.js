@@ -22,6 +22,7 @@ function App() {
     const dispatchUserEvent = (actionType, payload) => {
 		switch (actionType) {
 			case 'SET_USER':
+                console.log('SET_USER');
 				setUser(payload);
 				return;
 			case 'LOGOUT_USER':
@@ -36,12 +37,13 @@ function App() {
       <Router>
           <div className="App">
               <AppContext.Provider value={{ user, dispatchUserEvent }}>
-              {/* <AppBar/> */}
-              <NavBar />
+              <AppBar/>
+              {/* <NavBar /> */}
               <Routes>
                   <Route exact path='/' element={<HomePage/>}/>
                   <Route exact path='/register' element={<RegistrationPage/>}/>
-                  <Route exact path='/authenticate' element={<LoginPage/>}/>
+                  <Route exact path='/login' element={<LoginPage/>}/>
+                  {/* <Route exact path='/login' element={<LoginForm/>}/> */}
                   <Route exact path='/settings' element={<SettingsPage/>}/>
                   <Route exact path='/deleteAuthenticator' element={<DeleteAuthenticator/>}/>
                   <Route exact path='/oidc_interaction/:uid/login' element={<OIDC_login/>}/>

@@ -1,5 +1,7 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
+import {Link} from 'react-router-dom';
+import { AppContext } from '../Pages/App/context';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,17 +11,24 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 
 const pages = ['Services'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const ResponsiveAppBar = () => {
+
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const [userSettings, setUserSettings] = useState(['Login', 'Register']);
 
+  const { user } = useContext(AppContext);
+  useEffect(()=>{
+    if(user) {
+        setUserSettings(['Profile', 'Account', 'Dashboard', 'Logout']);
+      }
+  },[user]);
+  
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -34,21 +43,22 @@ const ResponsiveAppBar = () => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{background: "darkolivegreen", color: "blanchedalmond",}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+
           {/* Displays the name of the Website in AppBar when menu icon is not visible */}
           <Typography
-            variant="h6"
+            variant="h5"
             noWrap
             component="div"
-            sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+            sx={{ mr: 2, display: { xs: 'flex', md: 'flex' } }}
           >
-            FYP
+            Final Year Project
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-
+          {/* NAV MENU */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' } }}>
             {/* Displays the menu icon */}
             <IconButton
               size="large"
@@ -86,37 +96,13 @@ const ResponsiveAppBar = () => {
                 </MenuItem>
               ))}
             </Menu>
-
           </Box>
           
-          {/* Displays the name of the Website in AppBar when Menu icon is present */}
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
-          >
-            FYP
-          </Typography>
-
-          {/* Displays the available pages as buttons in the AppBar */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
-          </Box>
-
-          {/* Displays the user menu and handles clicking the menu items */}
+          {/* USER MENU */}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar src="/static/images/avatar/2.jpg" />
+                <Avatar alt={user?.name?.toUpperCase()} src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -135,14 +121,15 @@ const ResponsiveAppBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+              {userSettings.map((setting) => (
+                // <Link to={`/${setting}`}>
+                <MenuItem key={setting} component={Link} to={`/${setting}`} onClick={handleCloseUserMenu}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
+                // </Link>
               ))}
             </Menu>
           </Box>
-
         </Toolbar>
       </Container>
     </AppBar>

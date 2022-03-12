@@ -1,20 +1,34 @@
-import React from 'react';
-import {useState, useEffect} from 'react';
 import './Home.css';
+import React from 'react';
+import {useState, useEffect, useContext} from 'react';
 import GetUser from '../../Utils/GetUser';
+import { AppContext } from '../App/context';
 
 function HomePage() {
+
     const [message, setMessage] = useState(null);
+    const { user, dispatchUserEvent } = useContext(AppContext);
 
     const digestApiResponse = async (resp) => {
-
-        if(resp?.error) {
-            setMessage("Please log in");
+        // if no user is set; retrieve user from resp
+        if(!user) {
+            if(resp?.error) {
+                setMessage("Please log in");
+            } else {
+                const cookie_user = {
+                    name: resp?.name,
+                    email: resp?.email,
+                    username: resp?.username,
+                }
+                dispatchUserEvent('SET_USER', cookie_user);
+                setMessage("Hello, " + cookie_user?.name + "!");
+            }
         } else {
-            setMessage("Hello, " + resp?.name + "!");
+            setMessage("Hello, " + user?.name + "!");
         }
     }
 
+    // retrieve user from cookie
     useEffect(() => {
         GetUser().then(resp => digestApiResponse(resp));
     }, [])

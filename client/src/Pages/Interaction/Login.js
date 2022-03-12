@@ -1,34 +1,39 @@
+import './Interaction.css';
+import { Button, TextField, Box, Container } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import {useState, useEffect} from 'react';
+import React, {useContext} from 'react';
 import { useNavigate } from "react-router-dom";
 import { Authenticate } from '../../Utils/WebAuthnUtils';
-import './Interaction.css';
+import GetFingerprint from '../../Utils/GetFingerprint';
+import { AppContext } from '../App/context';
 
 function OIDC_Login() {
 
-  // Login state variables
-  const [email, setEmail] = useState(null);
-  const [username, setUsername] = useState(null);
-  const [name, setName] = useState(null);
-
-  let {uid} = useParams();
   const navigate = useNavigate();
+  let {uid} = useParams();
+  const {dispatchUserEvent} = useContext(AppContext);
 
-  const handleLogin = async (e) => {
 
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Authenticate user first
+    const data = new FormData(e.currentTarget);
     const user = {
-      name: name,
-      email: email,
-      username: username,
-    };
+      email: data.get('email'),
+      username: data.get('username'),
+      name: data.get('name'),
+    }
     let authentication_successful = await Authenticate(user);
 
+
     if(authentication_successful) {
+      // Set user globally + send fingerprint to BE
+      dispatchUserEvent('SET_USER', user);
+      const fingerprint = await GetFingerprint();
+
       // reply to OIDC endpoint
-      const new_uid = await fetch('http://localhost:3000/oidc_interaction/' + uid + '/login', {
+      const oidc_resp = await fetch('http://localhost:3000/oidc_interaction/' + uid + '/login', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,
@@ -37,31 +42,60 @@ function OIDC_Login() {
       });
 
       // Navigate to consent page
-      const data = await new_uid.json();
-      const parsed_new_uid = data.uid;
-      const parsed_scope = data.scope;
+      const resp = await oidc_resp.json();
+      const parsed_new_uid = resp.uid;
+      const parsed_scope = resp.scope;
       navigate("/oidc_interaction/" + parsed_new_uid + "/consent/" + parsed_scope);
 
     } else {
-      console.log("-------- FIDO authentication failed.")
+      // Display error
     }
   }
 
   return (
     <div>
-      <div>
-        <h3> Single Sign-On Login </h3><br/>
-        {/*TODO: update to use FORMIK*/}
-        <form onSubmit={handleLogin}>
-          <label>Email address:</label><br/>
-          <input name="email" type="text" onChange={(e) => {setEmail(e.target.value);}}/><br/><br/>
-          <label>Username:</label><br/>
-          <input name="username" type="text" onChange={(e) => {setUsername(e.target.value);}}/><br/><br/>
-          <label>Name:</label><br/>
-          <input name="name" type="text" onChange={(e) => {setName(e.target.value);}}/><br/><br/>
-          <input type="submit" value="Log In"/>
-        </form>
-      </div>
+        <Container component="main" maxWidth="xs">
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            />
+            <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="username"
+            label="Username"
+            type="username"
+            id="username"
+            autoComplete="username"
+            />
+            <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="name"
+            label="Full name"
+            type="name"
+            id="name"
+            autoComplete="name"
+            />
+            <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{background: "darkolivegreen", color: "blanchedalmond", mt: 3, mb: 2 }}
+            >
+            Log In
+            </Button>
+          </Box>
+        </Container>
     </div>
   );
 }

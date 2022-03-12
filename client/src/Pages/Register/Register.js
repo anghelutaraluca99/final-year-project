@@ -1,8 +1,9 @@
 import './Register.css';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import { Register } from '../../Utils/WebAuthnUtils';
 import { useNavigate } from "react-router-dom";
 import GetFingerprint from '../../Utils/GetFingerprint';
+import { AppContext } from '../App/context';
 
 function RegistrationPage() {
 
@@ -10,6 +11,8 @@ function RegistrationPage() {
     const [username, setUsername] = useState(null);
     const [name, setName] = useState(null);
     const navigate = useNavigate();
+    
+    const { dispatchUserEvent } = useContext(AppContext);
 
     async function handleSubmit(e){
         e.preventDefault();
@@ -24,6 +27,7 @@ function RegistrationPage() {
         console.log("registration_successful: ", registration_successful);
 
         if(registration_successful){
+            dispatchUserEvent('SET_USER', user);
             // Send fingerprint to BE - need to be logged in first
             const fingerprint = await GetFingerprint();
             navigate("/");

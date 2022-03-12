@@ -1,9 +1,9 @@
 import './Login.css';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import { useNavigate } from "react-router-dom";
 import { Authenticate } from '../../Utils/WebAuthnUtils';
 import GetFingerprint from '../../Utils/GetFingerprint';
-
+import { AppContext } from '../App/context';
 
 function LoginPage() {
 
@@ -11,7 +11,7 @@ function LoginPage() {
     const [username, setUsername] = useState(null);
     const [name, setName] = useState(null);
     const navigate = useNavigate();
-
+    const { dispatchUserEvent } = useContext(AppContext);
     async function handleSubmit(e) {
         e.preventDefault();
 
@@ -23,6 +23,7 @@ function LoginPage() {
         let authentication_successful = await Authenticate(user);
 
         if(authentication_successful){
+            dispatchUserEvent('SET_USER', user);
             // Send fingerprint to BE
             const fingerprint = await GetFingerprint();
             navigate("/");

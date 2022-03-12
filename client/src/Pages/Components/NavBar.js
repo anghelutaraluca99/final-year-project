@@ -1,30 +1,30 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {Link} from 'react-router-dom';
 import GetUser from '../../Utils/GetUser';
 import {useState, useEffect} from 'react';
-
+import { AppContext } from '../App/context';
 import './NavBar.css';
 
 function NavBar() {
-
+    const { user } = useContext(AppContext);
     const navStyle= {
         color:'blanchedalmond'
     }
 
-    const [visible, setVisible] = useState(false);
+    // const [visible, setVisible] = useState(false);
 
-    const digestApiResponse = async (resp) => {
+    // const digestApiResponse = async (resp) => {
 
-        if(resp?.error) {
-            setVisible(false);
-        } else {
-            setVisible(true);
-        }
-    }
+    //     if(resp?.error) {
+    //         setVisible(false);
+    //     } else {
+    //         setVisible(true);
+    //     }
+    // }
 
-    useEffect(() => {
-        GetUser().then(resp => digestApiResponse(resp));
-    }, [])
+    // useEffect(() => {
+    //     GetUser().then(resp => digestApiResponse(resp));
+    // }, [])
 
 
     return (
@@ -32,13 +32,13 @@ function NavBar() {
             <nav>
                 <h3>Final Year Project</h3>
                 <ul className="nav_links">
-                    {!visible && <Link style={navStyle} to="/register">
+                    {!user && <Link style={navStyle} to="/register">
                         <li>Register</li>
                     </Link>}
-                    {!visible && <Link style={navStyle} to="/authenticate">
+                    {!user && <Link style={navStyle} to="/authenticate">
                         <li>Authenticate</li>
                     </Link>}
-                    {visible && <Link style={navStyle} to="/settings">
+                    {user && <Link style={navStyle} to="/settings">
                         <li>Settings</li>
                     </Link>}
                 </ul>

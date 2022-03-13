@@ -9,7 +9,6 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
@@ -53,14 +52,19 @@ const ResponsiveAppBar = () => {
 
   return (
     <AppBar position="static" sx={{ px: 3 }}>
-      {/* <Container> */}
       <Toolbar disableGutters>
         {/* Displays the name of the Website in AppBar when menu icon is not visible */}
         <Typography
           variant="h5"
           noWrap
-          component="div"
-          sx={{ mr: 2, display: { xs: "flex", md: "flex" } }}
+          component={Link}
+          to={"/"}
+          sx={{
+            mr: 2,
+            display: { xs: "flex", md: "flex" },
+            textDecoration: "none",
+            color: "white",
+          }}
         >
           Final Year Project
         </Typography>
@@ -145,7 +149,6 @@ const ResponsiveAppBar = () => {
           </Menu>
         </Box>
       </Toolbar>
-      {/* </Container> */}
     </AppBar>
   );
 };

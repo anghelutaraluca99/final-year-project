@@ -10,7 +10,6 @@ import {
   ListItemIcon,
   ListItemText,
   Button,
-  TextField,
   Typography,
   Container,
   Grid,
@@ -37,7 +36,6 @@ function ManageAuthenticatorsPage() {
 
   const setKeys = async (data) => {
     const parsedData = await data.json();
-    console.log(parsedData);
     if (data.status === 200) {
       setAuthenticators(parsedData);
     } else {
@@ -56,19 +54,46 @@ function ManageAuthenticatorsPage() {
 
   const handleRegistration = async () => {
     let registration_successful = await RegisterNewAuthenticator();
-    if (registration_successful) {
+    if (!registration_successful?.error) {
+      setAuthenticators([
+        ...authenticators,
+        registration_successful.authenticator,
+      ]);
       // show successful
     } else {
       //display error
     }
   };
 
-  const handleDeletion = (e) => {
-    // Handle Delete
+  const handleDeletion = async (e) => {
+    e.preventDefault();
+    let res;
+    if (selectedKey) {
+      let respObj = {};
+      respObj.credentialID = selectedKey?.credentialID;
+      res = await fetch("http://localhost:3000/user/authenticators", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(respObj),
+      });
+      let parsed_resp = await res.json();
+      if (!parsed_resp?.error) {
+        setAuthenticators(
+          authenticators.filter(
+            (authenticator) => authenticator !== selectedKey
+          )
+        );
+      } else {
+        // display error
+      }
+    }
   };
 
-  const handleKeyClick = (e, key_credentialID) => {
-    setSelectedKey(key_credentialID);
+  const handleKeyClick = (e, key) => {
+    setSelectedKey(key);
   };
 
   return (
@@ -86,10 +111,8 @@ function ManageAuthenticatorsPage() {
                     <ListItemButton
                       key={authenticator.credentialID}
                       value={authenticator.credentialID}
-                      selected={selectedKey === authenticator.credentialID}
-                      onClick={(event) =>
-                        handleKeyClick(event, authenticator.credentialID)
-                      }
+                      selected={selectedKey === authenticator}
+                      onClick={(event) => handleKeyClick(event, authenticator)}
                     >
                       <ListItemIcon>
                         <Key />

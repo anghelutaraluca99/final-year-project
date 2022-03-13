@@ -1,14 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./App.css";
-import NavBar from "../Components/NavBar";
 import HomePage from "../Home/Home";
 import RegistrationPage from "../Register/Register";
 import LoginPage from "../Login/Login";
 import OIDC_login from "../Interaction/Login";
 import OIDC_consent from "../Interaction/Consent";
 import ManageAuthenticatorsPage from "../ManageAuthenticators/ManageAuthenticators";
-import DeleteAuthenticator from "../ManageAuthenticators/DeleteAuthenticator";
 import LogoutPage from "../LogoutPage/Logout";
 import AppBar from "../../Components/AppBar";
 import { AppContext } from "./context";
@@ -49,7 +47,6 @@ function App() {
         <AppContext.Provider value={{ user, dispatchUserEvent }}>
           <ThemeProvider theme={theme}>
             <AppBar />
-            {/* <NavBar /> */}
             <Routes>
               <Route exact path="/" element={<HomePage />} />
               <Route exact path="/register" element={<RegistrationPage />} />
@@ -59,11 +56,6 @@ function App() {
                 exact
                 path="/manage_authenticators"
                 element={<ManageAuthenticatorsPage />}
-              />
-              <Route
-                exact
-                path="/delete_authenticator"
-                element={<DeleteAuthenticator />}
               />
               <Route
                 exact

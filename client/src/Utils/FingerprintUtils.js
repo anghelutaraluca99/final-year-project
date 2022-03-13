@@ -53,3 +53,12 @@ export const SaveFingerprint = async () => {
     return false;
   }
 };
+
+export const GetFingerprint = async () => {
+  const fpPromise = FingerprintJS.load({ monitoring: false });
+
+  const fp = await fpPromise;
+  const fingerprint = await fp.get();
+
+  return fingerprint;
+};

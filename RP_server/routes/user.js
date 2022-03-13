@@ -14,13 +14,20 @@ const {
   ValidateFingerprint,
   SaveFingerprint,
 } = require("../controllers/user");
+const {
+  PreAccountRecovery,
+  AccountRecovery,
+} = require("../controllers/user/RecoverAccount");
 
-// Registration + authentication routes; traffic to these routes should not go through the middleware
+// Registration + authentication + account recovery routes; traffic to these routes should not go through the middleware
 router.post("/pre_register", PostPreRegistration);
 router.post("/register", PostRegistration);
 
 router.post("/pre_authenticate", PostPreAuthentication);
 router.post("/authenticate", PostAuthentication);
+
+router.post("/pre_account_recovery", PreAccountRecovery);
+router.post("/account_recovery", AccountRecovery);
 
 // Middleware to check for JWT token
 router.use("/", requireAuth);

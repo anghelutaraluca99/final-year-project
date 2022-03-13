@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 import {
   ValidateFingerprint,
   SaveFingerprint,
-} from "../../Utils/ValidateFingerprint";
+} from "../../Utils/FingerprintUtils";
 import { AppContext } from "../App/context";
 
 function RegistrationPage() {
@@ -28,7 +28,7 @@ function RegistrationPage() {
   const [showError, setShowError] = useState(false);
   const [showTrustDevice, setShowTrustDevice] = useState(false);
 
-  async function handleRegister(e) {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
     // Register user first
@@ -41,8 +41,9 @@ function RegistrationPage() {
     const registration_successful = await Register(user);
 
     if (registration_successful) {
-      // Set user globally + register fingerprint
+      // Set user globally
       dispatchUserEvent("SET_USER", user);
+
       // Check if device needs to be added as a trusted device
       const device_trusted = await ValidateFingerprint();
       if (device_trusted) {
@@ -55,7 +56,7 @@ function RegistrationPage() {
       setShowError(true);
       clearAlerts();
     }
-  }
+  };
 
   const handleTrustDevice = async () => {
     await SaveFingerprint();

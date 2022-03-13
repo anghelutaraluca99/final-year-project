@@ -16,11 +16,10 @@ import {
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Authenticate } from "../../Utils/WebAuthnUtils";
-import GetFingerprint from "../../Utils/GetFingerprint";
 import {
   ValidateFingerprint,
   SaveFingerprint,
-} from "../../Utils/ValidateFingerprint";
+} from "../../Utils/FingerprintUtils";
 import { AppContext } from "../App/context";
 
 function LoginPage() {
@@ -46,8 +45,6 @@ function LoginPage() {
 
       // Check if device needs to be added as a trusted device
       const device_trusted = await ValidateFingerprint();
-      console.log("DEVICE TRUSTED: ", device_trusted);
-
       if (device_trusted) {
         await SaveFingerprint();
         navigate("/");
@@ -62,6 +59,7 @@ function LoginPage() {
 
   const handleLostAuthenticator = async () => {
     console.log("Lost your key pressed");
+    navigate("/recover_account");
   };
 
   const handleTrustDevice = async () => {

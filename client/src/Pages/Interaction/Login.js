@@ -27,7 +27,6 @@ function OIDC_Login() {
     if (authentication_successful) {
       // Set user globally + send fingerprint to BE
       dispatchUserEvent("SET_USER", user);
-      const fingerprint = await GetFingerprint();
 
       // reply to OIDC endpoint
       const oidc_resp = await fetch(

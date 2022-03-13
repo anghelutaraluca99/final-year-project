@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
 import "./App.css";
 import HomePage from "../Home/Home";
 import RegistrationPage from "../Register/Register";
@@ -10,6 +9,7 @@ import ManageAuthenticatorsPage from "../ManageAuthenticators/ManageAuthenticato
 import LogoutPage from "../LogoutPage/Logout";
 import AppBar from "../../Components/AppBar";
 import ServicesPage from "../Services/Services";
+import RecoverAccount from "../RecoverAccount/RecoverAccount";
 import { AppContext } from "./context";
 import { useEffect, useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -53,6 +53,11 @@ function App() {
               <Route exact path="/register" element={<RegistrationPage />} />
               <Route exact path="/login" element={<LoginPage />} />
               <Route exact path="/logout" element={<LogoutPage />} />
+              <Route
+                exact
+                path="/recover_account"
+                element={<RecoverAccount />}
+              />
               <Route
                 exact
                 path="/manage_authenticators"

@@ -106,9 +106,7 @@ export const Register = async (user) => {
 
   // Wait for the results of verification
   const verificationJSON = await verificationResp.json();
-  console.log(
-    "--------- verificationJSON: " + JSON.stringify(verificationJSON, 0, 2)
-  );
+
   // Log answer saved in 'verified'
   if (!verificationJSON.error) {
     if (verificationJSON?.token) {
@@ -174,5 +172,76 @@ export const RegisterNewAuthenticator = async (user) => {
     const verificationJSON = await verificationResp.json();
     // Log answer saved in 'verified'
     return verificationJSON;
+  }
+};
+
+export const AccountRecovery = async (user, fingerprint) => {
+  let respObj = {};
+  respObj.user = user;
+  respObj.fingerprint = fingerprint;
+
+  // GET registration options from the endpoint that calls
+  // @simplewebauthn/server -> generateRegistrationOptions()
+  const resp = await fetch("http://localhost:3000/user/pre_account_recovery", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(respObj),
+  });
+
+  // Check for errors in response
+  let parsedResp = await resp.json();
+  if (typeof parsedResp?.error !== "undefined") {
+    // If response contains an error
+    console.log(parsedResp.error);
+    return false;
+  }
+
+  // eslint-disable-next-line
+  let attResp;
+  try {
+    // Pass the options to the authenticator and wait for a response
+
+    respObj.attResp = await startRegistration(parsedResp);
+  } catch (error) {
+    if (error.name === "InvalidStateError") {
+      console.log(
+        "Error: Authenticator was probably already registered by user"
+      );
+    } else {
+      console.log(error);
+    }
+    // authenticator returned error
+    return false;
+  }
+
+  // POST the response to the endpoint that calls
+  // @simplewebauthn/server -> verifyRegistrationResponse()
+  const verificationResp = await fetch(
+    "http://localhost:3000/user/account_recovery",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(respObj),
+    }
+  );
+
+  // Wait for the results of verification
+  const verificationJSON = await verificationResp.json();
+
+  // Log answer saved in 'verified'
+  if (!verificationJSON?.error) {
+    if (verificationJSON?.token) {
+      localStorage.setItem("jwt_token", verificationJSON.token);
+      return true;
+    }
+    // no jtw token received back from BE
+    return false;
+  } else {
+    // BE returned error
+    return false;
   }
 };

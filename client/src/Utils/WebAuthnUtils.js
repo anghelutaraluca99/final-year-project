@@ -5,48 +5,54 @@ import {
 
 // Takes user as parameter; user should have at least user.email set
 export const Authenticate = async (user) => {
-  let respObj = {};
-  respObj.name = user?.name;
-  respObj.email = user?.email;
-  respObj.username = user?.username;
-
-  // GET authentication options
-  const resp = await fetch("http://localhost:3000/user/pre_authenticate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(respObj),
-  });
-
-  // eslint-disable-next-line
-  let asseResp;
   try {
-    // Pass the options to the authenticator and wait for a response
-    respObj.asseResp = await startAuthentication(await resp.json());
-  } catch (error) {
-    throw error;
-  }
+    let respObj = {};
+    respObj.name = user?.name;
+    respObj.email = user?.email;
+    respObj.username = user?.username;
 
-  const verificationResp = await fetch(
-    "http://localhost:3000/user/authenticate",
-    {
+    // GET authentication options
+    const resp = await fetch("http://localhost:3000/user/pre_authenticate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(respObj),
-    }
-  );
+    });
 
-  // Wait for the results of verification
-  const responseJSON = await verificationResp.json();
-  console.log("Authentication response: ", responseJSON);
-  if (responseJSON?.token) {
-    localStorage.setItem("jwt_token", responseJSON.token);
-    return true;
+    // eslint-disable-next-line
+    let asseResp;
+    try {
+      // Pass the options to the authenticator and wait for a response
+      respObj.asseResp = await startAuthentication(await resp.json());
+      console.log(JSON.stringify(respObj.asseResp, 0, 2));
+    } catch (error) {
+      return false;
+    }
+
+    const verificationResp = await fetch(
+      "http://localhost:3000/user/authenticate",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(respObj),
+      }
+    );
+
+    // Wait for the results of verification
+    const responseJSON = await verificationResp.json();
+    console.log("Authentication response: ", responseJSON);
+    if (responseJSON?.token) {
+      localStorage.setItem("jwt_token", responseJSON.token);
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.log("error: ", error);
+    return false;
   }
-  return false;
 };
 
 export const Register = async (user) => {
@@ -149,7 +155,7 @@ export const RegisterNewAuthenticator = async (user) => {
       } else {
         console.log(error);
       }
-      return false;
+      return { error: error };
     }
 
     // POST the response to the endpoint that calls

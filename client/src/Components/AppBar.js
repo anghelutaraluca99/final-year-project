@@ -103,7 +103,12 @@ const ResponsiveAppBar = () => {
             }}
           >
             {pages.map((page) => (
-              <MenuItem key={page} onClick={handleCloseNavMenu}>
+              <MenuItem
+                key={`menuItem${page}`}
+                component={Link}
+                to={"/services"}
+                onClick={handleCloseNavMenu}
+              >
                 <Typography textAlign="center">{page}</Typography>
               </MenuItem>
             ))}
@@ -136,9 +141,9 @@ const ResponsiveAppBar = () => {
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
           >
-            {userSettings.map((setting) => (
+            {userSettings.map((setting, idx) => (
               <MenuItem
-                key={setting}
+                key={`menuItem${idx}`}
                 component={Link}
                 to={setting.path}
                 onClick={handleCloseUserMenu}

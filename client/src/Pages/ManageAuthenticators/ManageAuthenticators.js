@@ -3,7 +3,9 @@ import React, { useState, useEffect } from "react";
 import { useContext } from "react";
 import { RegisterNewAuthenticator } from "../../Utils/WebAuthnUtils";
 import {
+  Alert,
   Box,
+  Collapse,
   List,
   ListItem,
   ListItemButton,
@@ -31,6 +33,8 @@ function ManageAuthenticatorsPage() {
   const { user } = useContext(AppContext);
   const [authenticators, setAuthenticators] = useState(null);
   const [selectedKey, setSelectedKey] = useState(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   const classes = useStyles();
 
@@ -59,9 +63,11 @@ function ManageAuthenticatorsPage() {
         ...authenticators,
         registration_successful.authenticator,
       ]);
-      // show successful
+      setShowSuccess(true);
+      clearAlerts();
     } else {
-      //display error
+      setShowError(true);
+      clearAlerts();
     }
   };
 
@@ -96,28 +102,51 @@ function ManageAuthenticatorsPage() {
     setSelectedKey(key);
   };
 
+  const clearAlerts = () => {
+    setTimeout(() => {
+      setShowSuccess(false);
+      setShowError(false);
+    }, 1000 * 3);
+  };
+
   return (
     <div className={classes.root}>
       <Container sx={{ mt: 2 }}>
-        <Typography variant="h5"> Manage Authenticators </Typography>
+        <Collapse in={showSuccess}>
+          <Alert severity="success">Authenticator registered.</Alert>
+        </Collapse>
 
+        <Collapse in={showError}>
+          <Alert severity="error">Authenticator could not be registered.</Alert>
+        </Collapse>
+
+        <Typography variant="h5" key="manage_authenticators" sx={{ mt: 2 }}>
+          Manage Authenticators
+        </Typography>
         {/* List of authenticators */}
         {user && authenticators && (
           <Box sx={{ width: "100%", mt: 2 }}>
-            <List dense="true">
+            <List dense>
               <Grid container spacing={2}>
                 {authenticators.map((authenticator) => (
-                  <ListItem item xs={12}>
+                  <ListItem
+                    xs={12}
+                    key={`ListItem:${authenticator.credentialID}`}
+                    value={authenticator.credentialID}
+                  >
                     <ListItemButton
-                      key={authenticator.credentialID}
+                      key={`ListItemButton:${authenticator.credentialID}`}
                       value={authenticator.credentialID}
                       selected={selectedKey === authenticator}
                       onClick={(event) => handleKeyClick(event, authenticator)}
                     >
-                      <ListItemIcon>
+                      <ListItemIcon
+                        key={`ListItemIcon:${authenticator.credentialID}`}
+                      >
                         <Key />
                       </ListItemIcon>
                       <ListItemText
+                        key={`ListItemText:${authenticator.credentialID}`}
                         primary={authenticator.credentialID}
                         secondary={"Last used on: " + authenticator.updatedAt}
                       />
@@ -128,12 +157,12 @@ function ManageAuthenticatorsPage() {
             </List>
           </Box>
         )}
-
         {/* Button to delete authenticators */}
         {user && (
           <Grid container spacing="1" alignItems="center">
             <Box sx={{ width: "100%", mt: 2 }}>
               <Button
+                key="delete_authenticator"
                 onClick={handleDeletion}
                 value="Delete Authenticator"
                 variant="outlined"
@@ -145,6 +174,7 @@ function ManageAuthenticatorsPage() {
             {/* Button to add a new authenticator */}
             <Box sx={{ width: "100%", mt: 2 }}>
               <Button
+                key="register_authenticator"
                 onClick={handleRegistration}
                 value="Register New Authenticator"
                 variant="outlined"
@@ -155,11 +185,9 @@ function ManageAuthenticatorsPage() {
             </Box>
           </Grid>
         )}
-
         {!user && (
-          <Typography variant="subheading2">
-            {" "}
-            Unauthorised. Please log in.{" "}
+          <Typography variant="subheading2" key="unauthorised_authenticators">
+            Unauthorised. Please log in.
           </Typography>
         )}
       </Container>

@@ -1,6 +1,13 @@
 import "./Register.css";
-import { Button, TextField, Box, Container } from "@mui/material";
-import React, { useContext } from "react";
+import {
+  Alert,
+  Collapse,
+  Button,
+  TextField,
+  Box,
+  Container,
+} from "@mui/material";
+import React, { useContext, useState } from "react";
 import { Register } from "../../Utils/WebAuthnUtils";
 import { useNavigate } from "react-router-dom";
 import GetFingerprint from "../../Utils/GetFingerprint";
@@ -10,6 +17,7 @@ function RegistrationPage() {
   const navigate = useNavigate();
 
   const { dispatchUserEvent } = useContext(AppContext);
+  const [showError, setShowError] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -26,16 +34,27 @@ function RegistrationPage() {
     if (registration_successful) {
       // Set user globally + register fingerprint
       dispatchUserEvent("SET_USER", user);
-      const fingerprint = await GetFingerprint();
+      await GetFingerprint();
       navigate("/");
     } else {
-      //TODO :: Display error
+      setShowError(true);
+      clearAlerts();
     }
   }
 
+  const clearAlerts = () => {
+    setTimeout(() => {
+      setShowError(false);
+    }, 1000 * 3);
+  };
+
   return (
     <div>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" sx={{ mt: 2 }}>
+        <Collapse in={showError}>
+          <Alert severity="error">Registration failed.</Alert>
+        </Collapse>
+
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
             margin="normal"

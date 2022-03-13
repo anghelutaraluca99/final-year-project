@@ -9,6 +9,7 @@ import OIDC_consent from "../Interaction/Consent";
 import ManageAuthenticatorsPage from "../ManageAuthenticators/ManageAuthenticators";
 import LogoutPage from "../LogoutPage/Logout";
 import AppBar from "../../Components/AppBar";
+import ServicesPage from "../Services/Services";
 import { AppContext } from "./context";
 import { useEffect, useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -57,6 +58,7 @@ function App() {
                 path="/manage_authenticators"
                 element={<ManageAuthenticatorsPage />}
               />
+              <Route exact path="/services" element={<ServicesPage />} />
               <Route
                 exact
                 path="/oidc_interaction/:uid/login"

@@ -32,14 +32,11 @@ function LoginPage() {
     e.preventDefault();
 
     const data = new FormData(e.currentTarget);
-    const user = {
-      email: data.get("email"),
-      username: data.get("username"),
-      name: data.get("name"),
-    };
+    const email = data.get("email");
 
-    let authentication_successful = await Authenticate(user);
-    if (authentication_successful) {
+    let authentication_successful = await Authenticate(email);
+    if (!authentication_successful?.error) {
+      const user = authentication_successful?.user;
       // Set user globally
       dispatchUserEvent("SET_USER", user);
 

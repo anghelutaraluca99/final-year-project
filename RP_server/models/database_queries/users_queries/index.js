@@ -5,4 +5,3 @@ exports.authenticateUser = require("./AuthenticateUser");
 exports.getUserChallenge = require("./GetUserChallenge");
 exports.getUser = require("./GetUser");
 exports.setUserCurrentChallenge = require("./setUserCurrentChallenge");
-exports.UpdateUserChallenge = require("./UpdateUserChallenge");

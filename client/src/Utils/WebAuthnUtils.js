@@ -4,12 +4,10 @@ import {
 } from "@simplewebauthn/browser";
 
 // Takes user as parameter; user should have at least user.email set
-export const Authenticate = async (user) => {
+export const Authenticate = async (email) => {
   try {
     let respObj = {};
-    respObj.name = user?.name;
-    respObj.email = user?.email;
-    respObj.username = user?.username;
+    respObj.email = email;
 
     // GET authentication options
     const resp = await fetch("http://localhost:3000/user/pre_authenticate", {
@@ -26,7 +24,7 @@ export const Authenticate = async (user) => {
       // Pass the options to the authenticator and wait for a response
       respObj.asseResp = await startAuthentication(await resp.json());
     } catch (error) {
-      return false;
+      return { error: error };
     }
 
     const verificationResp = await fetch(
@@ -42,14 +40,16 @@ export const Authenticate = async (user) => {
 
     // Wait for the results of verification
     const responseJSON = await verificationResp.json();
-    if (responseJSON?.token) {
+    if (responseJSON?.token && responseJSON?.user) {
       localStorage.setItem("jwt_token", responseJSON.token);
-      return true;
+      return {
+        message: "Login successful",
+        user: responseJSON?.user,
+      };
     }
-    return false;
+    return { error: "Log in failed. Response from backend is invalid." };
   } catch (error) {
-    console.log("error: ", error);
-    return false;
+    return { error: error };
   }
 };
 
@@ -195,7 +195,7 @@ export const AccountRecovery = async (user, fingerprint) => {
   if (typeof parsedResp?.error !== "undefined") {
     // If response contains an error
     console.log(parsedResp.error);
-    return false;
+    return { error: parsedResp?.error };
   }
 
   // eslint-disable-next-line
@@ -213,7 +213,7 @@ export const AccountRecovery = async (user, fingerprint) => {
       console.log(error);
     }
     // authenticator returned error
-    return false;
+    return { error: error };
   }
 
   // POST the response to the endpoint that calls
@@ -234,14 +234,16 @@ export const AccountRecovery = async (user, fingerprint) => {
 
   // Log answer saved in 'verified'
   if (!verificationJSON?.error) {
-    if (verificationJSON?.token) {
+    if (verificationJSON?.token && verificationJSON?.user) {
       localStorage.setItem("jwt_token", verificationJSON.token);
-      return true;
+      return { message: "Account recovery successful.", user: user };
     }
     // no jtw token received back from BE
-    return false;
+    return {
+      error: "Could not recover account. Response from backend is invalid.",
+    };
   } else {
     // BE returned error
-    return false;
+    return { error: "Could not recover account. Unknown error." };
   }
 };

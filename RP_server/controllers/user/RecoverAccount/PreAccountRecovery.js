@@ -7,8 +7,18 @@ const {
 module.exports = async (req, res) => {
   req = req.body;
   let userID = req.user.email;
-  let userName = req.user.username;
+  let username = req.user.username;
+  let name = req.user.name;
   let fingerprint = req.fingerprint;
+
+  let user = await usersQueries.getUser(userID);
+
+  if (!(username === user?.username && name === user?.name)) {
+    return res.status(401).send({
+      error:
+        "User details are incorrect. Not authorized to reset authenticator.",
+    });
+  }
 
   // verify fingreprint against existing records
   try {
@@ -54,13 +64,13 @@ module.exports = async (req, res) => {
     rpName: "WebAuthn",
     rpID: "localhost",
     userID: userID,
-    userName: userName,
+    userName: username,
     attestationType: "indirect",
   };
 
   const options = WebAuthnServer.generateRegistrationOptions(opt);
 
-  const updateChallenge = await usersQueries.UpdateUserChallenge({
+  const updateChallenge = await usersQueries.setUserCurrentChallenge({
     userID: userID,
     challenge: options.challenge,
   });

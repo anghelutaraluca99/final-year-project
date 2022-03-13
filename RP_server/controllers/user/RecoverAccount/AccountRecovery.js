@@ -6,7 +6,15 @@ const {
 const { jwtUtils } = require("../../../utils");
 
 module.exports = async (req, res) => {
-  userID = req.body.user.email;
+  const userID = req.body.user.email;
+
+  // get user details to return with JWT
+  const data = await usersQueries.getUser(userID);
+  const user = {
+    email: data.userID,
+    name: data.name,
+    username: data.username,
+  };
 
   // Get challenge from DB
   const challenge = await usersQueries.getUserChallenge(userID);
@@ -27,8 +35,8 @@ module.exports = async (req, res) => {
   // If authenticator is successfully verified, replace existing authenticators with the new authenticator
   const { verified, registrationInfo } = verification;
   if (verified) {
-    let { credentialPublicKey, credentialID, counter } = registrationInfo;
-    let reset_challenge = await usersQueries.UpdateUserChallenge({
+    let { credentialPublicKey, credentialID } = registrationInfo;
+    await usersQueries.setUserCurrentChallenge({
       userID: userID,
       challenge: "0",
     });
@@ -47,18 +55,11 @@ module.exports = async (req, res) => {
 
     if (delete_authenticators && resultRegisterAuthenticator) {
       // Construct and send JWT token
-      const tokenPayload = {
-        email: req.body?.user?.email,
-        name: req.body?.user?.name,
-        username: req.body?.user?.username,
-      }; // construct token payload for JWT token
-      const token = await jwtUtils.createToken(
-        tokenPayload,
-        process.env.JWT_SECRET
-      ); // construct JWT token
+      const token = await jwtUtils.createToken(user, process.env.JWT_SECRET); // construct JWT token
       return res.status(200).send({
         messsage: "Authenticators reset auccessfully.",
         token: token,
+        user: user,
       });
     } else {
       return res.status(500).send({

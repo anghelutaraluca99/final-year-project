@@ -27,7 +27,7 @@ module.exports = async (req, res) => {
 
   if (verified) {
     let { credentialPublicKey, credentialID, counter } = registrationInfo;
-    let reset_challenge = await usersQueries.UpdateUserChallenge({
+    let reset_challenge = await usersQueries.setUserCurrentChallenge({
       userID: userID,
       challenge: "0",
     });

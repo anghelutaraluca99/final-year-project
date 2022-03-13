@@ -5,21 +5,22 @@ const {
 } = require("../../models/database_queries");
 
 module.exports = async (req, res) => {
-  let userID = req.body.email;
-  let userName = req.body.username;
+  const userID = req.body.email;
+  const username = req.body.username;
+  const name = req.body.name;
 
   const opt = {
     rpName: "WebAuthn",
     rpID: "localhost",
     userID: userID,
-    userName: userName,
+    userName: username,
     attestationType: "indirect",
   };
 
   const options = WebAuthnServer.generateRegistrationOptions(opt);
 
   // check if user is recorded in db
-  const existing_user = await usersQueries.getUser({ userID: userID });
+  const existing_user = await usersQueries.getUser(userID);
   if (existing_user) {
     // check if user has authenticators registered
     const existing_authenticators =
@@ -32,14 +33,15 @@ module.exports = async (req, res) => {
     } else {
       await usersQueries.setUserCurrentChallenge({
         userID: userID,
-        new_challenge: options.challenge,
+        challenge: options.challenge,
       });
       return res.send(options);
     }
   } else {
     await usersQueries.preRegisterUser({
       userID: userID,
-      userName: userName,
+      username: username,
+      name: name,
       challenge: options.challenge,
     });
     return res.send(options);

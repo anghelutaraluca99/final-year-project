@@ -29,9 +29,9 @@ function RecoverAccount() {
 
     const fingerprint = await GetFingerprint();
     let account_recovery_successful = await AccountRecovery(user, fingerprint);
-    if (account_recovery_successful) {
+    if (!account_recovery_successful?.error) {
       // Set user globally
-      dispatchUserEvent("SET_USER", user);
+      dispatchUserEvent("SET_USER", account_recovery_successful?.user);
       navigate("/");
     } else {
       setShowError(true);

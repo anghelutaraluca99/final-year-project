@@ -1,21 +1,13 @@
 const { users } = require("../../schemas");
 
-module.exports = async function ({
-     userID,
-     username,
-     challenge
- }) {
+module.exports = async function ({ userID, username, name, challenge }) {
+  const user = new users({
+    userID: userID,
+    username: username,
+    name: name,
+    challenge: challenge,
+  });
+  res = await user.save();
 
-    let valid = await users.findOne({ userID: userID }, "-_id");
-    if(valid === null) {
-        const user = new users({
-            userID: userID,
-            username: username,
-            challenge: challenge,
-        });
-        res = await user.save();
-    } else {
-        res = "Error: email already registered"
-    }
-    return res;
+  return res;
 };

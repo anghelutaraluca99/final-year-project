@@ -1,16 +1,24 @@
 import "./Register.css";
 import {
   Alert,
-  Collapse,
-  Button,
-  TextField,
   Box,
+  Button,
+  Collapse,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
 import { Register } from "../../Utils/WebAuthnUtils";
 import { useNavigate } from "react-router-dom";
-import GetFingerprint from "../../Utils/GetFingerprint";
+import {
+  ValidateFingerprint,
+  SaveFingerprint,
+} from "../../Utils/ValidateFingerprint";
 import { AppContext } from "../App/context";
 
 function RegistrationPage() {
@@ -18,8 +26,9 @@ function RegistrationPage() {
 
   const { dispatchUserEvent } = useContext(AppContext);
   const [showError, setShowError] = useState(false);
+  const [showTrustDevice, setShowTrustDevice] = useState(false);
 
-  async function handleSubmit(e) {
+  async function handleRegister(e) {
     e.preventDefault();
 
     // Register user first
@@ -34,13 +43,30 @@ function RegistrationPage() {
     if (registration_successful) {
       // Set user globally + register fingerprint
       dispatchUserEvent("SET_USER", user);
-      await GetFingerprint();
-      navigate("/");
+      // Check if device needs to be added as a trusted device
+      const device_trusted = await ValidateFingerprint();
+      if (device_trusted) {
+        await SaveFingerprint();
+        navigate("/");
+      } else {
+        setShowTrustDevice(true);
+      }
     } else {
       setShowError(true);
       clearAlerts();
     }
   }
+
+  const handleTrustDevice = async () => {
+    await SaveFingerprint();
+    setShowTrustDevice(false);
+    navigate("/");
+  };
+
+  const handleDoNotTrustDevice = () => {
+    setShowTrustDevice(false);
+    navigate("/");
+  };
 
   const clearAlerts = () => {
     setTimeout(() => {
@@ -55,7 +81,7 @@ function RegistrationPage() {
           <Alert severity="error">Registration failed.</Alert>
         </Collapse>
 
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleRegister} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
@@ -99,6 +125,29 @@ function RegistrationPage() {
           >
             Register
           </Button>
+
+          <Dialog
+            open={showTrustDevice}
+            onClose={handleDoNotTrustDevice}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Trust this device?"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Trusting this device means anyone with access to it could also
+                gain access to your account.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDoNotTrustDevice} autoFocus>
+                Do not trust
+              </Button>
+              <Button onClick={handleTrustDevice}>Trust</Button>
+            </DialogActions>
+          </Dialog>
         </Box>
       </Container>
     </div>

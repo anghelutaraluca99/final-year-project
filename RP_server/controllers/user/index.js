@@ -9,3 +9,5 @@ exports.PreRegisterNewAuthenticator = require("./PreRegisterNewAuthenticatorCont
 exports.RegisterNewAuthenticator = require("./RegisterNewAuthenticatorController.js");
 exports.Fingerprint = require("./PostFingerprintController.js");
 exports.CompareFingerprint = require("./CompareFingerprintController.js");
+exports.ValidateFingerprint = require("./ValidateFingerprint.js");
+exports.SaveFingerprint = require("./SaveFingerprint.js");

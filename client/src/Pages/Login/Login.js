@@ -3,6 +3,12 @@ import {
   Alert,
   Button,
   Collapse,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Link,
   TextField,
   Box,
   Container,
@@ -11,14 +17,19 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Authenticate } from "../../Utils/WebAuthnUtils";
 import GetFingerprint from "../../Utils/GetFingerprint";
+import {
+  ValidateFingerprint,
+  SaveFingerprint,
+} from "../../Utils/ValidateFingerprint";
 import { AppContext } from "../App/context";
 
 function LoginPage() {
   const navigate = useNavigate();
   const { dispatchUserEvent } = useContext(AppContext);
   const [showError, setShowError] = useState(false);
+  const [showTrustDevice, setShowTrustDevice] = useState(false);
 
-  async function handleSubmit(e) {
+  const handleLogIn = async (e) => {
     e.preventDefault();
 
     const data = new FormData(e.currentTarget);
@@ -32,13 +43,37 @@ function LoginPage() {
     if (authentication_successful) {
       // Set user globally
       dispatchUserEvent("SET_USER", user);
-      await GetFingerprint();
-      navigate("/");
+
+      // Check if device needs to be added as a trusted device
+      const device_trusted = await ValidateFingerprint();
+      console.log("DEVICE TRUSTED: ", device_trusted);
+
+      if (device_trusted) {
+        await SaveFingerprint();
+        navigate("/");
+      } else {
+        setShowTrustDevice(true);
+      }
     } else {
       setShowError(true);
       clearAlerts();
     }
-  }
+  };
+
+  const handleLostAuthenticator = async () => {
+    console.log("Lost your key pressed");
+  };
+
+  const handleTrustDevice = async () => {
+    await SaveFingerprint();
+    setShowTrustDevice(false);
+    navigate("/");
+  };
+
+  const handleDoNotTrustDevice = () => {
+    setShowTrustDevice(false);
+    navigate("/");
+  };
 
   const clearAlerts = () => {
     setTimeout(() => {
@@ -53,7 +88,7 @@ function LoginPage() {
           <Alert severity="error">Log in failed.</Alert>
         </Collapse>
 
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+        <Box component="form" onSubmit={handleLogIn} sx={{ mt: 2 }}>
           <TextField
             margin="normal"
             required
@@ -92,11 +127,41 @@ function LoginPage() {
             key="log_in"
             fullWidth
             variant="contained"
-            // color="primary"
-            // sx={{background: "darkolivegreen", color: "blanchedalmond", mt: 3, mb: 2 }}
+            sx={{ mb: 1 }}
           >
             Log In
           </Button>
+
+          <Link
+            variant="body2"
+            color="secondary"
+            onClick={handleLostAuthenticator}
+          >
+            Lost your key?
+          </Link>
+
+          <Dialog
+            open={showTrustDevice}
+            onClose={handleDoNotTrustDevice}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Trust this device?"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Trusting this device means anyone with access to it could also
+                gain access to your account.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDoNotTrustDevice} autoFocus>
+                Do not trust
+              </Button>
+              <Button onClick={handleTrustDevice}>Trust</Button>
+            </DialogActions>
+          </Dialog>
         </Box>
       </Container>
     </div>

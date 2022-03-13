@@ -1,5 +1,4 @@
 const { fingerprintsQueries } = require("../../models/database_queries");
-// const { compObjects, compResults } = require("../../utils");
 
 module.exports = async (req, res) => {
   try {
@@ -24,16 +23,24 @@ module.exports = async (req, res) => {
       console.log(
         "Matches " + no_of_matches + " records out of " + no_of_records
       );
+      if (no_of_matches > 0) {
+        return res.status(200).send({ message: "Fingerprint matches records" });
+      } else {
+        // No record matched given fingerprint
+        return res
+          .status(404)
+          .send({ error: "Fingerprint could not be validated" });
+      }
+    } else {
+      // No records are available
+      return res
+        .status(404)
+        .send({ error: "Fingerprint could not be validated" });
     }
-    // Save fingerprint in DB
-    const response = await fingerprintsQueries.addFingerprint(
-      email,
-      fingerprint
-    );
-
-    res.status(200).send({ message: "Fingerprint added successfully!" });
   } catch (e) {
-    console.log(e);
-    res.status(500).send({ error: "Fingerprint could not be saved." });
+    // Error
+    return res
+      .status(500)
+      .send({ error: "Fingerprint could not be validated" });
   }
 };

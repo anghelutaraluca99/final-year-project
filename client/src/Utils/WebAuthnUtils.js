@@ -25,7 +25,6 @@ export const Authenticate = async (user) => {
     try {
       // Pass the options to the authenticator and wait for a response
       respObj.asseResp = await startAuthentication(await resp.json());
-      console.log(JSON.stringify(respObj.asseResp, 0, 2));
     } catch (error) {
       return false;
     }
@@ -43,7 +42,6 @@ export const Authenticate = async (user) => {
 
     // Wait for the results of verification
     const responseJSON = await verificationResp.json();
-    console.log("Authentication response: ", responseJSON);
     if (responseJSON?.token) {
       localStorage.setItem("jwt_token", responseJSON.token);
       return true;

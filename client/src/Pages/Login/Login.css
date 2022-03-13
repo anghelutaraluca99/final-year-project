@@ -26,7 +26,8 @@ ul {
   list-style: none;
 }
 
-.service_link, .service_link:visited {
+.service_link,
+.service_link:visited {
   background-color: white;
   color: black;
   border: 2px solid darkolivegreen;
@@ -36,7 +37,8 @@ ul {
   display: inline-block;
 }
 
-.service_link:hover, .service_link:active {
+.service_link:hover,
+.service_link:active {
   background-color: darkolivegreen;
   color: white;
 }

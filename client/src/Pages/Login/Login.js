@@ -71,7 +71,8 @@ function LoginPage() {
                     type="submit"
                     fullWidth
                     variant="contained"
-                    sx={{background: "darkolivegreen", color: "blanchedalmond", mt: 3, mb: 2 }}
+                    // color="primary"
+                    // sx={{background: "darkolivegreen", color: "blanchedalmond", mt: 3, mb: 2 }}
                     >
                     Log In
                     </Button>

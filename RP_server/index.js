@@ -3,37 +3,52 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const app = express();
-require('dotenv').config();
+require("dotenv").config();
 const PORT = process.env.PORT || 3000;
-const { Provider } = require('oidc-provider');
+const { Provider } = require("oidc-provider");
 const router = require("./routes");
-const configurationOidc = require('./oidc/configuration/oidc_config');
+const configurationOidc = require("./oidc/configuration/oidc_config");
 global.interactionRedirects = 0;
 global.loginRedirects = 0;
 
-
 // Open ID Connect Identity Provider
-const oidc = new Provider('http://localhost:3000', configurationOidc);
+const oidc = new Provider("http://localhost:3000", configurationOidc);
 
 // MIDDLEWARES
 
 // CORS middleware
-const whitelist = ['http://localhost:3000', 'http://localhost:8080', 'http://localhost:4000', 'http://localhost:4001', 'null'];
+const whitelist = [
+  "http://localhost:3000",
+  "http://localhost:8080",
+  "http://localhost:4000",
+  "http://localhost:4001",
+  null,
+  undefined,
+];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
+      console.log("RP_Origin: ", origin);
+      callback(null, { origin: true });
     } else {
-      callback(new Error('Origin ' + origin + ' not allowed by CORS'));
+      console.log("-------CORS ERROR----------");
+      callback(null, { origin: false });
+      // callback(new Error("Origin " + origin + " not allowed by CORS"), {
+      //   origin: false,
+      // });
     }
   },
   credentials: true,
 };
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
-
+// app.options("*", cors(corsOptions));
+app.use((req, res, next) => {
+  // req.headers.origin = req.headers.origin || req.headers.host;
+  console.log("%%%%%%%% ", req.headers);
+  next();
+});
 // Middleware to set Access-Control-Allow-Origin header
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:8080");
   next();
 });
@@ -53,14 +68,15 @@ app.use("/oidc", cors(corsOptions), oidc.callback());
 app.use("/", router);
 
 // Connection to database
-mongoose.connect(process.env.DB_URI, {
+mongoose
+  .connect(process.env.DB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-}).then(() => {
+  })
+  .then(() => {
     console.log(`Connected to database.`);
-// Start listening
-    app.listen(
-        PORT,
-        () => console.log(`Server live at http://localhost:${PORT}`)
+    // Start listening
+    app.listen(PORT, () =>
+      console.log(`Server live at http://localhost:${PORT}`)
     );
-});
+  });

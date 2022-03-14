@@ -1,4 +1,3 @@
-import "./Settings.css";
 import React, { useState, useEffect } from "react";
 import { useContext } from "react";
 import { RegisterNewAuthenticator } from "../../Utils/WebAuthnUtils";
@@ -33,8 +32,10 @@ function ManageAuthenticatorsPage() {
   const { user } = useContext(AppContext);
   const [authenticators, setAuthenticators] = useState(null);
   const [selectedKey, setSelectedKey] = useState(null);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showError, setShowError] = useState(false);
+  const [showRegisterSuccess, setShowRegisterSuccess] = useState(null);
+  const [showDeleteSuccess, setShowDeleteSuccess] = useState(null);
+  const [showRegisterError, setShowRegisterError] = useState(null);
+  const [showDeleteError, setShowDeleteError] = useState(null);
 
   const classes = useStyles();
 
@@ -57,16 +58,23 @@ function ManageAuthenticatorsPage() {
   }, []);
 
   const handleRegistration = async () => {
-    let registration_successful = await RegisterNewAuthenticator();
+    // Register new authenticator
+    const registration_successful = await RegisterNewAuthenticator();
+
+    // Display alerts accordingly
     if (!registration_successful?.error) {
       setAuthenticators([
         ...authenticators,
         registration_successful.authenticator,
       ]);
-      setShowSuccess(true);
+      setShowRegisterSuccess(registration_successful?.message);
       clearAlerts();
     } else {
-      setShowError(true);
+      console.log(
+        "registration_successful?.error: ",
+        registration_successful?.error
+      );
+      setShowRegisterError(registration_successful.error);
       clearAlerts();
     }
   };
@@ -74,9 +82,12 @@ function ManageAuthenticatorsPage() {
   const handleDeletion = async (e) => {
     e.preventDefault();
     let res;
+    // If key has been selected in the list
     if (selectedKey) {
+      // Get credentialID of the key to be deleted
       let respObj = {};
       respObj.credentialID = selectedKey?.credentialID;
+      // Send request to delete key
       res = await fetch("http://localhost:3000/user/authenticators", {
         method: "POST",
         headers: {
@@ -85,6 +96,7 @@ function ManageAuthenticatorsPage() {
         },
         body: JSON.stringify(respObj),
       });
+      // Parse response and display alert accordingly
       let parsed_resp = await res.json();
       if (!parsed_resp?.error) {
         setAuthenticators(
@@ -92,8 +104,11 @@ function ManageAuthenticatorsPage() {
             (authenticator) => authenticator !== selectedKey
           )
         );
+        setShowDeleteSuccess(parsed_resp?.message);
+        clearAlerts();
       } else {
-        // display error
+        setShowDeleteError(parsed_resp?.error);
+        clearAlerts();
       }
     }
   };
@@ -104,20 +119,30 @@ function ManageAuthenticatorsPage() {
 
   const clearAlerts = () => {
     setTimeout(() => {
-      setShowSuccess(false);
-      setShowError(false);
-    }, 1000 * 3);
+      setShowRegisterSuccess(null);
+      setShowRegisterError(null);
+      setShowDeleteError(null);
+      setShowDeleteSuccess(null);
+    }, 1000 * 5);
   };
 
   return (
     <div className={classes.root}>
       <Container sx={{ mt: 2 }}>
-        <Collapse in={showSuccess}>
-          <Alert severity="success">Authenticator registered.</Alert>
+        <Collapse in={showRegisterSuccess !== null}>
+          <Alert severity="success">{showRegisterSuccess}</Alert>
         </Collapse>
 
-        <Collapse in={showError}>
-          <Alert severity="error">Authenticator could not be registered.</Alert>
+        <Collapse in={showDeleteSuccess !== null}>
+          <Alert severity="success">{showDeleteSuccess}</Alert>
+        </Collapse>
+
+        <Collapse in={showRegisterError !== null}>
+          <Alert severity="error">{showRegisterError}</Alert>
+        </Collapse>
+
+        <Collapse in={showDeleteError !== null}>
+          <Alert severity="error">{showDeleteError}</Alert>
         </Collapse>
 
         <Typography variant="h5" key="manage_authenticators" sx={{ mt: 2 }}>

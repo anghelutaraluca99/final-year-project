@@ -17,8 +17,8 @@ module.exports = async (req, res) => {
   // Check user is registered
   if (user === null)
     return res
-      .status(404)
-      .send({ message: `Could not find user ${req.body.email}` });
+      .status(401)
+      .send({ error: `User ${req.body.email} does not exist` });
 
   const credID = Buffer.from(req.body.asseResp.id, "Base64").toString("hex");
   const challenge = await usersQueries.getUserChallenge(userID); // get challenge from DB
@@ -29,8 +29,8 @@ module.exports = async (req, res) => {
 
   if (!authenticator) {
     console.log(`Could not find authenticator ${req.body.asseResp.id}`);
-    return res.status(400).send({
-      message: `Could not find authenticator ${req.body.asseResp.id}`,
+    return res.status(401).send({
+      error: `Could not find authenticator ${req.body.asseResp.id}`,
     });
   }
 
@@ -40,20 +40,19 @@ module.exports = async (req, res) => {
       credential: req.body.asseResp,
       expectedChallenge: challenge,
       expectedOrigin: "http://localhost:8080",
-      // expectedOrigin: FIDO_ORIGIN,
       expectedRPID: "localhost",
       authenticator: authenticator,
     });
   } catch (error) {
     console.log(error);
-    return res.status(400).send({ error: error.message });
+    return res
+      .status(401)
+      .send({ error: "Log in failed. Authenticator verification failed." });
   }
 
   const { verified, authenticationInfo } = verification;
 
   if (verified) {
-    // authorised
-
     await authenticatorsQueries.updateAuthenticatorCounter({
       userID: userID,
       credentialID: credID,
@@ -72,11 +71,8 @@ module.exports = async (req, res) => {
     };
     return res.status(200).send(resp); // construct and send response
   } else {
-    // unauthorised
-
     return res.status(401).send({
-      message: "Login failed!",
-      error: "", // TODO :: add error handling
+      error: "Login failed!",
     });
   }
 };

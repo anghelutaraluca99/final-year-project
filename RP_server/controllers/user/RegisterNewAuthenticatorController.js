@@ -46,7 +46,7 @@ module.exports = async (req, res) => {
       credentialID: credentialID.toString("hex"),
     });
     return res.status(200).send({
-      messsage: "Authenticator registered successfully",
+      message: "Authenticator registered successfully",
       authenticator: authenticator,
     });
   }

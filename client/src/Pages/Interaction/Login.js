@@ -17,16 +17,13 @@ function OIDC_Login() {
 
     // Authenticate user first
     const data = new FormData(e.currentTarget);
-    const user = {
-      email: data.get("email"),
-      username: data.get("username"),
-      name: data.get("name"),
-    };
-    let authentication_successful = await Authenticate(user);
+    const email = data.get("email");
 
-    if (authentication_successful) {
-      // Set user globally + send fingerprint to BE
-      dispatchUserEvent("SET_USER", user);
+    let authentication_successful = await Authenticate(email);
+
+    if (!authentication_successful?.error) {
+      // Set user globally
+      dispatchUserEvent("SET_USER", authentication_successful?.user);
 
       // reply to OIDC endpoint
       const oidc_resp = await fetch(

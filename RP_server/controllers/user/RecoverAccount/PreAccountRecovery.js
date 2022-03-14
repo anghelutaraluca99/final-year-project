@@ -1,6 +1,7 @@
 const WebAuthnServer = require("@simplewebauthn/server");
 const {
   usersQueries,
+  authenticatorsQueries,
   fingerprintsQueries,
 } = require("../../../models/database_queries");
 
@@ -13,10 +14,23 @@ module.exports = async (req, res) => {
 
   let user = await usersQueries.getUser(userID);
 
+  // User does not exist
+  if (!user) {
+    return res.status(401).send({
+      error: `User ${userID} does not exist`,
+    });
+  }
+
+  const authenticators = await authenticatorsQueries.getAuthenticators(userID);
+  if (authenticators.length === 0) {
+    // User is pre-registered, but does not have authenticators registered.
+    // Send user does not exist error message as to not alert potential attackers
+    return res.status(401).send({ error: `User ${userID} does not exist` });
+  }
+
   if (!(username === user?.username && name === user?.name)) {
     return res.status(401).send({
-      error:
-        "User details are incorrect. Not authorized to reset authenticator.",
+      error: "User details are incorrect.",
     });
   }
 
@@ -41,22 +55,20 @@ module.exports = async (req, res) => {
       if (no_of_matches === 0) {
         // No record matched given fingerprint
         return res.status(401).send({
-          error:
-            "Fingerprint could not be validated. Not authorized to reset authenticator.",
+          error: "Fingerprint does not match records.",
         });
       }
     } else {
       // No records are available
       return res.status(401).send({
         error:
-          "Fingerprint could not be validated. Not authorized to reset authenticator.",
+          "Fingerprint could not be validated. There are no fingerprints registered with this account.",
       });
     }
   } catch (e) {
     // Error
     return res.status(401).send({
-      error:
-        "Fingerprint could not be validated. Not authorized to reset authenticator.",
+      error: "Fingerprint could not be validated.",
     });
   }
 

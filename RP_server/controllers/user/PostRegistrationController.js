@@ -22,7 +22,9 @@ module.exports = async (req, res) => {
       expectedRPID: "localhost",
     });
   } catch (error) {
-    return res.status(400).send({ error: error.message });
+    return res.status(401).send({
+      error: "Registration failed. Authenticator could not be validated.",
+    });
   }
 
   const { verified, registrationInfo } = verification;
@@ -58,5 +60,5 @@ module.exports = async (req, res) => {
     };
     return res.status(200).send(resp);
   }
-  return res.status(500).send({ error: "Unknown error." });
+  return res.status(401).send({ error: "Registration failed." });
 };

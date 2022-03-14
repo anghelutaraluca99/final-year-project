@@ -11,9 +11,9 @@ module.exports = async (req, res) => {
   // get user details to return with JWT
   const data = await usersQueries.getUser(userID);
   const user = {
-    email: data.userID,
-    name: data.name,
-    username: data.username,
+    email: data?.userID,
+    name: data?.name,
+    username: data?.username,
   };
 
   // Get challenge from DB
@@ -29,7 +29,11 @@ module.exports = async (req, res) => {
       expectedRPID: "localhost",
     });
   } catch (error) {
-    return res.status(400).send({ error: error.message });
+    return res
+      .status(400)
+      .send({
+        error: "Account recovery failed. Authenticator verification failed.",
+      });
   }
 
   // If authenticator is successfully verified, replace existing authenticators with the new authenticator

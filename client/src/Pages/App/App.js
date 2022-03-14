@@ -49,20 +49,8 @@ function App() {
           <ThemeProvider theme={theme}>
             <AppBar />
             <Routes>
+              {/* Route accessible to any user */}
               <Route exact path="/" element={<HomePage />} />
-              <Route exact path="/register" element={<RegistrationPage />} />
-              <Route exact path="/login" element={<LoginPage />} />
-              <Route exact path="/logout" element={<LogoutPage />} />
-              <Route
-                exact
-                path="/recover_account"
-                element={<RecoverAccount />}
-              />
-              <Route
-                exact
-                path="/manage_authenticators"
-                element={<ManageAuthenticatorsPage />}
-              />
               <Route exact path="/services" element={<ServicesPage />} />
               <Route
                 exact
@@ -73,6 +61,26 @@ function App() {
                 exact
                 path="/oidc_interaction/:uid/consent/:scope"
                 element={<OIDC_consent />}
+              />
+
+              {/* Routes accessible only to users who are not logged in */}
+
+              <Route exact path="/register" element={<RegistrationPage />} />
+              <Route exact path="/login" element={<LoginPage />} />
+
+              <Route
+                exact
+                path="/recover_account"
+                element={<RecoverAccount />}
+              />
+
+              {/* Routes accessible only to users who are logged in */}
+              <Route exact path="/logout" element={<LogoutPage />} />
+
+              <Route
+                exact
+                path="/manage_authenticators"
+                element={<ManageAuthenticatorsPage />}
               />
             </Routes>
           </ThemeProvider>

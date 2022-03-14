@@ -25,7 +25,7 @@ function RegistrationPage() {
   const navigate = useNavigate();
 
   const { dispatchUserEvent } = useContext(AppContext);
-  const [showError, setShowError] = useState(false);
+  const [showError, setShowError] = useState(null);
   const [showTrustDevice, setShowTrustDevice] = useState(false);
 
   const handleRegister = async (e) => {
@@ -40,7 +40,7 @@ function RegistrationPage() {
     };
     const registration_successful = await Register(user);
 
-    if (registration_successful) {
+    if (!registration_successful?.error) {
       // Set user globally
       dispatchUserEvent("SET_USER", user);
 
@@ -53,7 +53,7 @@ function RegistrationPage() {
         setShowTrustDevice(true);
       }
     } else {
-      setShowError(true);
+      setShowError(registration_successful?.error);
       clearAlerts();
     }
   };
@@ -71,15 +71,15 @@ function RegistrationPage() {
 
   const clearAlerts = () => {
     setTimeout(() => {
-      setShowError(false);
+      setShowError(null);
     }, 1000 * 3);
   };
 
   return (
     <div>
       <Container component="main" maxWidth="xs" sx={{ mt: 2 }}>
-        <Collapse in={showError}>
-          <Alert severity="error">Registration failed.</Alert>
+        <Collapse in={showError !== null}>
+          <Alert severity="error">{showError}</Alert>
         </Collapse>
 
         <Box component="form" onSubmit={handleRegister} sx={{ mt: 1 }}>

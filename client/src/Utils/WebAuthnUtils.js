@@ -18,13 +18,32 @@ export const Authenticate = async (email) => {
       body: JSON.stringify(respObj),
     });
 
+    const parsedResp = await resp.json();
+
+    if (parsedResp?.error !== undefined) {
+      return { error: parsedResp?.error };
+    }
+
     // eslint-disable-next-line
     let asseResp;
     try {
       // Pass the options to the authenticator and wait for a response
-      respObj.asseResp = await startAuthentication(await resp.json());
+      respObj.asseResp = await startAuthentication(parsedResp);
     } catch (error) {
-      return { error: error };
+      console.log("Eroarea cealalta");
+      if (error.name === "TypeError") {
+        // No credentials found for given user on authenticator
+        // Do not display this as an error as we do not with an attacker to gain this informaiton
+        return { error: "Log in failed." };
+      } else {
+        if (error.name === "DOMException") {
+          // User aborted login
+          return { error: "Log in aborted." };
+        } else {
+          // For any other error type, return generic error
+          return { error: "Log in aborted." };
+        }
+      }
     }
 
     const verificationResp = await fetch(
@@ -73,8 +92,8 @@ export const Register = async (user) => {
   let parsedResp = await resp.json();
   if (typeof parsedResp?.error !== "undefined") {
     // If response contains an error
-    console.log(parsedResp.error);
-    return false;
+    console.log("Eroare inregistrare: ", parsedResp.error);
+    return { error: parsedResp?.error };
   }
 
   // eslint-disable-next-line
@@ -88,10 +107,12 @@ export const Register = async (user) => {
       console.log(
         "Error: Authenticator was probably already registered by user"
       );
+      return {
+        error: `Authenticator was already registered by user ${respObj.email}`,
+      };
     } else {
-      console.log(error);
+      return { error: "Registration aborted" };
     }
-    return false;
   }
 
   // POST the response to the endpoint that calls
@@ -108,70 +129,81 @@ export const Register = async (user) => {
   const verificationJSON = await verificationResp.json();
 
   // Log answer saved in 'verified'
-  if (!verificationJSON.error) {
+  if (!verificationJSON?.error) {
     if (verificationJSON?.token) {
       localStorage.setItem("jwt_token", verificationJSON.token);
-      return true;
+      return { message: "Registration successful." };
     }
-    return true;
+    return { error: "Registration failed. User could not be returned." };
   } else {
-    return false;
+    return { error: verificationJSON?.error };
   }
 };
 
 export const RegisterNewAuthenticator = async (user) => {
   // GET registration options from the endpoint that calls
   // @simplewebauthn/server -> generateRegistrationOptions()
-  const resp = await fetch(
-    "http://localhost:3000/user/pre_register_new_authenticator",
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,
-      },
-    }
-  );
-
-  let parsedResp = await resp.json();
-
-  if (typeof parsedResp?.error !== "undefined") {
-    // If response contains an error
-    console.log(parsedResp.error);
-  } else {
-    // eslint-disable-next-line
-    let attResp;
-    try {
-      // Pass the options to the authenticator and wait for a response
-      attResp = await startRegistration(parsedResp);
-    } catch (error) {
-      if (error.name === "InvalidStateError") {
-        console.log(
-          "Error: Authenticator was probably already registered by user"
-        );
-      } else {
-        console.log(error);
-      }
-      return { error: error };
-    }
-
-    // POST the response to the endpoint that calls
-    // @simplewebauthn/server -> verifyRegistrationResponse()
-    const verificationResp = await fetch(
-      "http://localhost:3000/user/register_new_authenticator",
+  try {
+    const resp = await fetch(
+      "http://localhost:3000/user/pre_register_new_authenticator",
       {
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,
-          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ attResp: attResp }),
       }
     );
 
-    // Wait for the results of verification
-    const verificationJSON = await verificationResp.json();
-    // Log answer saved in 'verified'
-    return verificationJSON;
+    let parsedResp = await resp.json();
+
+    if (typeof parsedResp?.error !== "undefined") {
+      // If response contains an error
+      console.log(parsedResp.error);
+      return { error: parsedResp?.error };
+    } else {
+      // eslint-disable-next-line
+      let attResp;
+      try {
+        // Pass the options to the authenticator and wait for a response
+        attResp = await startRegistration(parsedResp);
+      } catch (error) {
+        if (error.name === "InvalidStateError") {
+          console.log(
+            "Error: Authenticator was probably already registered by user"
+          );
+          return { error: "Authenticator already registered by user." };
+        } else {
+          console.log(error);
+          return { error: "Authenticator registration aborted." };
+        }
+      }
+
+      // POST the response to the endpoint that calls
+      // @simplewebauthn/server -> verifyRegistrationResponse()
+      const verificationResp = await fetch(
+        "http://localhost:3000/user/register_new_authenticator",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ attResp: attResp }),
+        }
+      );
+
+      // Wait for the results of verification
+      const verificationJSON = await verificationResp.json();
+      // Log answer saved in 'verified'
+      if (!verificationJSON?.error) return verificationJSON;
+      else
+        return {
+          error:
+            "Authenticator registration failed. Authenticator response was not valid.",
+        };
+    }
+  } catch (e) {
+    return { error: "Authenticator registration failed." };
   }
 };
 
@@ -194,7 +226,6 @@ export const AccountRecovery = async (user, fingerprint) => {
   let parsedResp = await resp.json();
   if (typeof parsedResp?.error !== "undefined") {
     // If response contains an error
-    console.log(parsedResp.error);
     return { error: parsedResp?.error };
   }
 
@@ -206,14 +237,10 @@ export const AccountRecovery = async (user, fingerprint) => {
     respObj.attResp = await startRegistration(parsedResp);
   } catch (error) {
     if (error.name === "InvalidStateError") {
-      console.log(
-        "Error: Authenticator was probably already registered by user"
-      );
+      return { error: `Authenticator already registered with ${user.email}.` };
     } else {
-      console.log(error);
+      return { error: "Account recovery aborted." };
     }
-    // authenticator returned error
-    return { error: error };
   }
 
   // POST the response to the endpoint that calls
@@ -244,6 +271,6 @@ export const AccountRecovery = async (user, fingerprint) => {
     };
   } else {
     // BE returned error
-    return { error: "Could not recover account. Unknown error." };
+    return { error: verificationJSON?.error };
   }
 };

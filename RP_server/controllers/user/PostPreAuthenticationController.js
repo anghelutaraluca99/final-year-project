@@ -5,13 +5,25 @@ const {
 } = require("../../models/database_queries");
 
 module.exports = async (req, res) => {
-  let userID = req.body.email;
+  const userID = req.body.email;
   const user = await usersQueries.getUser(userID);
   // Check user is registered
-  if (user === null)
+  if (user === null) {
+    // User does not exist
     return res
-      .status(404)
-      .send({ message: `Could not find user ${req.body.email}` });
+      .status(401)
+      .send({ error: `User ${req.body.email} does not exist` });
+  } else {
+    const existing_authenticators =
+      await authenticatorsQueries.getAuthenticators(userID);
+    if (existing_authenticators?.length === 0) {
+      // User has pre-registered, but has not completed registration
+      // Keeping the same error message as to not alert a potential attacker
+      return res
+        .status(401)
+        .send({ error: `User ${req.body.email} does not exist` });
+    }
+  }
 
   let authenticators = await authenticatorsQueries.getAuthenticators(userID);
 

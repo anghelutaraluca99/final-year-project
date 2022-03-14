@@ -27,7 +27,7 @@ module.exports = async (req, res) => {
       await authenticatorsQueries.getAuthenticators(userID);
     if (existing_authenticators?.length !== 0) {
       // if user has authenticators; do not register; else register
-      return res.status(409).send({
+      return res.status(401).send({
         error: "Email already registered.",
       });
     } else {

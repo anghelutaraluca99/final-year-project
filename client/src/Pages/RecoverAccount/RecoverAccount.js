@@ -15,7 +15,7 @@ import { AppContext } from "../App/context";
 function RecoverAccount() {
   const navigate = useNavigate();
   const { dispatchUserEvent } = useContext(AppContext);
-  const [showError, setShowError] = useState(false);
+  const [showError, setShowError] = useState(null);
 
   const handleRecoverAccount = async (e) => {
     e.preventDefault();
@@ -34,22 +34,22 @@ function RecoverAccount() {
       dispatchUserEvent("SET_USER", account_recovery_successful?.user);
       navigate("/");
     } else {
-      setShowError(true);
+      setShowError(account_recovery_successful?.error);
       clearAlerts();
     }
   };
 
   const clearAlerts = () => {
     setTimeout(() => {
-      setShowError(false);
-    }, 1000 * 3);
+      setShowError(null);
+    }, 1000 * 5);
   };
 
   return (
     <div>
       <Container component="main" maxWidth="xs" sx={{ mt: 2 }}>
-        <Collapse in={showError}>
-          <Alert severity="error">Account recovery failed.</Alert>
+        <Collapse in={showError !== null}>
+          <Alert severity="error">{showError}</Alert>
         </Collapse>
 
         <Box component="form" onSubmit={handleRecoverAccount} sx={{ mt: 2 }}>

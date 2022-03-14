@@ -25,7 +25,7 @@ import { AppContext } from "../App/context";
 function LoginPage() {
   const navigate = useNavigate();
   const { dispatchUserEvent } = useContext(AppContext);
-  const [showError, setShowError] = useState(false);
+  const [showError, setShowError] = useState(null);
   const [showTrustDevice, setShowTrustDevice] = useState(false);
 
   const handleLogIn = async (e) => {
@@ -49,7 +49,7 @@ function LoginPage() {
         setShowTrustDevice(true);
       }
     } else {
-      setShowError(true);
+      setShowError(authentication_successful?.error);
       clearAlerts();
     }
   };
@@ -72,15 +72,15 @@ function LoginPage() {
 
   const clearAlerts = () => {
     setTimeout(() => {
-      setShowError(false);
-    }, 1000 * 3);
+      setShowError(null);
+    }, 1000 * 5);
   };
 
   return (
     <div>
       <Container component="main" maxWidth="xs" sx={{ mt: 2 }}>
-        <Collapse in={showError}>
-          <Alert severity="error">Log in failed.</Alert>
+        <Collapse in={showError !== null}>
+          <Alert severity="error">{showError}</Alert>
         </Collapse>
 
         <Box component="form" onSubmit={handleLogIn} sx={{ mt: 2 }}>

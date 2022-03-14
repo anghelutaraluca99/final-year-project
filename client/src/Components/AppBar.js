@@ -51,26 +51,10 @@ const ResponsiveAppBar = () => {
   };
 
   return (
-    <AppBar position="static" sx={{ px: 3 }}>
+    <AppBar position="static" sx={{ pr: 1 }}>
       <Toolbar disableGutters>
-        {/* Displays the name of the Website in AppBar when menu icon is not visible */}
-        <Typography
-          variant="h5"
-          noWrap
-          component={Link}
-          to={"/"}
-          sx={{
-            mr: 2,
-            display: { xs: "flex", md: "flex" },
-            textDecoration: "none",
-            color: "white",
-          }}
-        >
-          Final Year Project
-        </Typography>
-
         {/* NAV MENU */}
-        <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "flex" } }}>
+        <Box sx={{ flexGrow: 0, display: { xs: "flex", md: "flex" } }}>
           {/* Displays the menu icon */}
           <IconButton
             size="large"
@@ -113,6 +97,24 @@ const ResponsiveAppBar = () => {
               </MenuItem>
             ))}
           </Menu>
+        </Box>
+
+        {/* Display name of WebApp */}
+        <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "flex", mx: 5 } }}>
+          <Typography
+            variant="h5"
+            noWrap
+            component={Link}
+            to={"/"}
+            sx={{
+              mr: 2,
+              display: { xs: "flex", md: "flex" },
+              textDecoration: "none",
+              color: "white",
+            }}
+          >
+            Final Year Project
+          </Typography>
         </Box>
 
         {/* USER MENU */}

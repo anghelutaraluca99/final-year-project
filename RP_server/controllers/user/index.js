@@ -11,3 +11,4 @@ exports.Fingerprint = require("./PostFingerprintController.js");
 exports.CompareFingerprint = require("./CompareFingerprintController.js");
 exports.ValidateFingerprint = require("./ValidateFingerprint.js");
 exports.SaveFingerprint = require("./SaveFingerprint.js");
+exports.GetFingerprints = require("./GetFingerprints.js");

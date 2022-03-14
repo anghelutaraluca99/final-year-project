@@ -25,9 +25,9 @@ const ResponsiveAppBar = () => {
     if (user) {
       setUserSettings([
         { name: "Profile", path: "/profile" },
-        { name: "Account", path: "/Account" },
+        { name: "Account History", path: "/account_history" },
         { name: "Manage Authenticators", path: "/manage_authenticators" },
-        { name: "Logout", path: "/Logout" },
+        { name: "Logout", path: "/logout" },
       ]);
     } else {
       setUserSettings([

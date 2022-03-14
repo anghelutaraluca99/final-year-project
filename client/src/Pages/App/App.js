@@ -10,6 +10,8 @@ import LogoutPage from "../LogoutPage/Logout";
 import AppBar from "../../Components/AppBar";
 import ServicesPage from "../Services/Services";
 import RecoverAccount from "../RecoverAccount/RecoverAccount";
+import ProfilePage from "../Profile/Profile";
+import AccountHistoryPage from "../AccountHistory/AccountHistory";
 import { AppContext } from "./context";
 import { useEffect, useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -64,19 +66,22 @@ function App() {
               />
 
               {/* Routes accessible only to users who are not logged in */}
-
               <Route exact path="/register" element={<RegistrationPage />} />
               <Route exact path="/login" element={<LoginPage />} />
-
               <Route
                 exact
                 path="/recover_account"
                 element={<RecoverAccount />}
               />
+              <Route exact path="/profile" element={<ProfilePage />} />
 
               {/* Routes accessible only to users who are logged in */}
               <Route exact path="/logout" element={<LogoutPage />} />
-
+              <Route
+                exact
+                path="/account_history"
+                element={<AccountHistoryPage />}
+              />
               <Route
                 exact
                 path="/manage_authenticators"

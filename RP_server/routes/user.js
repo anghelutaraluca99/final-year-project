@@ -13,6 +13,7 @@ const {
   Fingerprint,
   ValidateFingerprint,
   SaveFingerprint,
+  GetFingerprints,
 } = require("../controllers/user");
 const {
   PreAccountRecovery,
@@ -39,7 +40,7 @@ router.post("/authenticators", DeleteAuthenticator);
 router.post("/pre_register_new_authenticator", PreRegisterNewAuthenticator);
 router.post("/register_new_authenticator", RegisterNewAuthenticator);
 
-router.post("/fingerprint", Fingerprint);
+router.get("/fingerprints", GetFingerprints);
 router.post("/validate_fingerprint", ValidateFingerprint);
 router.post("/save_fingerprint", SaveFingerprint);
 

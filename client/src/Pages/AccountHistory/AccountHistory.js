@@ -34,11 +34,9 @@ function AccountHistoryPage() {
   const parseFingerprints = async (data) => {
     let parsedData = await data.json();
     setFingerprints(parsedData.fingerprints);
-    console.log("Unique fingerprints: ", fingerprints);
 
     let current_fingerprint = await GetFingerprint();
     setCurrentFingerprint(current_fingerprint);
-    console.log("Current fingerprint: ", currentFingerprint);
   };
 
   return (
@@ -70,14 +68,14 @@ function AccountHistoryPage() {
                     </ListItemAvatar>
                   )}
 
-                  {/* <ListItemIcon key={`ListItemIcon:${fingerprint.visitorId}`}>
-                    <Devices />
-                  </ListItemIcon> */}
-
                   <ListItemText
                     key={`ListItemText:${fingerprint.visitorId}`}
                     primary={"Fingerprint ID:" + fingerprint.visitorId}
                     secondary={"Last used on: " + fingerprint.lastUsed}
+                  />
+                  <ListItemText
+                    key={`ListItemText2:${fingerprint.visitorId}`}
+                    secondary={"Used " + fingerprint.lastUsed}
                   />
                 </ListItem>
               ))}

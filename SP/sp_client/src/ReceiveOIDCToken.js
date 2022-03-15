@@ -15,12 +15,14 @@ function ReceiveOIDCToken() {
         if (response?.user && response?.token) {
           // Set user and bearer token in localstorage
           localStorage.setItem("jwt_token", response?.token);
-          localStorage.setItem("user", response?.user);
+          localStorage.setItem("user", JSON.stringify(response?.user));
           // set user globally
           dispatchUserEvent("SET_USER", response?.user);
           // redirect to /
           navigator("/");
         }
+      } else {
+        //error; user could not be registered
       }
     });
   });

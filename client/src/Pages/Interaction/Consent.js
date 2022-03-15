@@ -1,8 +1,18 @@
 import { useParams } from "react-router-dom";
+import {
+  Button,
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+  Container,
+  Typography,
+} from "@mui/material";
 import "./Interaction.css";
 
 function Interaction() {
-  let { uid, scope } = useParams();
+  const { uid, scope } = useParams();
+  let scope_list = scope.split(" ").slice(1);
 
   const handleConsent = async (e) => {
     e.preventDefault();
@@ -32,11 +42,36 @@ function Interaction() {
 
   return (
     <div>
-      <div>
-        <h3> Single Sign-On Consent Page </h3>
-        <p> Allow application to gain access to your {scope} ?</p>
-        <button onClick={handleConsent}>Give consent</button>
-      </div>
+      <Container sx={{ mt: 2 }}>
+        <Typography variant="h5" sx={{ mt: 2 }}>
+          {" "}
+          Single Sign-On Consent Page{" "}
+        </Typography>
+        <Typography variant="subheading2" sx={{ mt: 4 }}>
+          Allow application to gain access to the following data about you?
+        </Typography>
+
+        <List dense>
+          <Grid
+            container
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+          >
+            {scope_list.map((scope) => (
+              <Grid item xs={12}>
+                <ListItem>
+                  <ListItemText primary={scope} />
+                </ListItem>
+              </Grid>
+            ))}
+          </Grid>
+        </List>
+        <Button variant="contained" onClick={handleConsent} sx={{ mt: 2 }}>
+          {" "}
+          Give consent{" "}
+        </Button>
+      </Container>
     </div>
   );
 }

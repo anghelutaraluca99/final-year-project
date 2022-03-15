@@ -1,15 +1,22 @@
 import "./Interaction.css";
-import { Button, TextField, Box, Container } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Collapse,
+  TextField,
+  Box,
+  Container,
+} from "@mui/material";
 import { useParams } from "react-router-dom";
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Authenticate } from "../../Utils/WebAuthnUtils";
-import GetFingerprint from "../../Utils/GetFingerprint";
 import { AppContext } from "../App/context";
 
 function OIDC_Login() {
   const navigate = useNavigate();
   let { uid } = useParams();
+  const [showError, setShowError] = useState(null);
   const { dispatchUserEvent } = useContext(AppContext);
 
   const handleSubmit = async (e) => {
@@ -45,13 +52,24 @@ function OIDC_Login() {
         "/oidc_interaction/" + parsed_new_uid + "/consent/" + parsed_scope
       );
     } else {
-      // Display error
+      setShowError(authentication_successful?.error);
+      clearAlerts();
     }
+  };
+
+  const clearAlerts = () => {
+    setTimeout(() => {
+      setShowError(null);
+    }, 1000 * 5);
   };
 
   return (
     <div>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" sx={{ mt: 2 }}>
+        <Collapse in={showError !== null}>
+          <Alert severity="error">{showError}</Alert>
+        </Collapse>
+
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
@@ -85,14 +103,10 @@ function OIDC_Login() {
           />
           <Button
             type="submit"
+            key="log_in"
             fullWidth
             variant="contained"
-            sx={{
-              background: "darkolivegreen",
-              color: "blanchedalmond",
-              mt: 3,
-              mb: 2,
-            }}
+            sx={{ mb: 1 }}
           >
             Log In
           </Button>

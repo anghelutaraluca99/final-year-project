@@ -19,9 +19,11 @@ const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [userSettings, setUserSettings] = useState(["Login", "Register"]);
+  const [locked, setLocked] = useState(false);
 
   const { user } = useContext(AppContext);
   useEffect(() => {
+    if (window.location.pathname.includes("oidc")) setLocked(true);
     if (user) {
       setUserSettings([
         { name: "Profile", path: "/profile" },
@@ -80,7 +82,7 @@ const ResponsiveAppBar = () => {
               vertical: "top",
               horizontal: "left",
             }}
-            open={Boolean(anchorElNav)}
+            open={!locked && Boolean(anchorElNav)}
             onClose={handleCloseNavMenu}
             sx={{
               display: { xs: "block" },
@@ -140,7 +142,7 @@ const ResponsiveAppBar = () => {
               vertical: "top",
               horizontal: "right",
             }}
-            open={Boolean(anchorElUser)}
+            open={!locked && Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
           >
             {userSettings.map((setting, idx) => (

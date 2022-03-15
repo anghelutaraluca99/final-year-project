@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
   }
 
   const tokenPayload = {
-    user: userinfo.sub,
+    user: userinfo,
     access_token: access_token,
   }; // construct token payload for JWT token
   const token = await jwtUtils.createToken(
@@ -28,6 +28,6 @@ module.exports = async (req, res) => {
   return res.status(200).send({
     message: `User ${userinfo.sub} registered successfully!`,
     token: token,
-    user: userinfo.sub,
+    user: userinfo,
   });
 };

@@ -1,18 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "./context";
 import "./App.css";
 
 function ReceiveOIDCToken() {
   const { access_token } = useParams();
   const navigator = useNavigate();
+  const { dispatchUserEvent } = useContext(AppContext);
 
   useEffect(() => {
     validate_token().then((response) => {
       if (!response?.error) {
         if (response?.user && response?.token) {
+          // Set user and bearer token in localstorage
           localStorage.setItem("jwt_token", response?.token);
           localStorage.setItem("user", response?.user);
+          // set user globally
+          dispatchUserEvent("SET_USER", response?.user);
+          // redirect to /
           navigator("/");
         }
       }

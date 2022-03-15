@@ -31,7 +31,6 @@ const corsOptions = {
       console.log("RP_Origin: ", origin);
       callback(null, { origin: true });
     } else {
-      console.log("-------CORS ERROR----------");
       callback(null, { origin: false });
       // callback(new Error("Origin " + origin + " not allowed by CORS"), {
       //   origin: false,
@@ -41,12 +40,7 @@ const corsOptions = {
   credentials: true,
 };
 app.use(cors(corsOptions));
-// app.options("*", cors(corsOptions));
-app.use((req, res, next) => {
-  // req.headers.origin = req.headers.origin || req.headers.host;
-  console.log("%%%%%%%% ", req.headers);
-  next();
-});
+
 // Middleware to set Access-Control-Allow-Origin header
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:8080");

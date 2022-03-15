@@ -3,7 +3,7 @@ const axios = require("axios");
 module.exports = async (req, res) => {
   let dogs = [];
 
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 30; i++) {
     dogs.push(
       new Promise((resolve) => {
         axios.get("https://dog.ceo/api/breeds/image/random").then((dog) => {

@@ -14,6 +14,7 @@ module.exports = async (req, res) => {
       { code_verifier }
     ); // to get access token and id token
     // userinfo = await global.oidcClient.userinfo(tokenSet.access_token); // to access user info
+    console.log("!+!+!+!+!+!+!+ TOKEN SET: ", JSON.stringify(tokenSet, 0, 2));
     // console.log(userinfo);
   } catch (e) {
     console.log(e);

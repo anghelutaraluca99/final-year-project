@@ -14,6 +14,17 @@ module.exports = {
       token_endpoint_auth_method: "client_secret_basic",
       grant_types: ["authorization_code"],
     },
+
+    {
+      client_id: "Cats as a service",
+      client_secret: "secret",
+      // application_type: 'web',
+      redirect_uris: ["http://localhost:5001/", "http://localhost:5000/"],
+      token_endpoint_auth_method: "none",
+      response_types: ["code"],
+      token_endpoint_auth_method: "client_secret_basic",
+      grant_types: ["authorization_code"],
+    },
   ],
   claims: {
     username: ["username"],

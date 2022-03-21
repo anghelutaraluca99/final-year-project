@@ -1,4 +1,3 @@
-import "./Interaction.css";
 import {
   Alert,
   Button,

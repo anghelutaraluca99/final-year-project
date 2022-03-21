@@ -8,7 +8,6 @@ import {
   Container,
   Typography,
 } from "@mui/material";
-import "./Interaction.css";
 
 function Interaction() {
   const { uid, scope } = useParams();

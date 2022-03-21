@@ -1,4 +1,3 @@
-import "./Register.css";
 import {
   Alert,
   Box,

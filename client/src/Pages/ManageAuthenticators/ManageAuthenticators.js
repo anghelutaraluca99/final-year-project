@@ -173,7 +173,10 @@ function ManageAuthenticatorsPage() {
                       <ListItemText
                         key={`ListItemText:${authenticator.credentialID}`}
                         primary={authenticator.credentialID}
-                        secondary={"Last used on: " + authenticator.updatedAt}
+                        secondary={
+                          "Last used on: " +
+                          new Date(authenticator.updatedAt).toLocaleDateString()
+                        }
                       />
                     </ListItemButton>
                   </ListItem>

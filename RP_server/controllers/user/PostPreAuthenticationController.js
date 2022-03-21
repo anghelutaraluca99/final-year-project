@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
       id: Buffer.from(authenticator.credentialID, "hex"),
       type: "public-key",
     })),
-    userVerification: "preferred",
+    userVerification: "required",
   });
 
   // Resets challenge for user

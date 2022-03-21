@@ -65,6 +65,12 @@ function Cats() {
           </ImageList>
         </Box>
       )}
+      {!user && (
+        <Typography variant="h5" sx={{ mt: 2 }}>
+          {" "}
+          Please log in in order to access this content.{" "}
+        </Typography>
+      )}
     </div>
   );
 }

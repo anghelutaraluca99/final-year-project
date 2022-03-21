@@ -9,10 +9,13 @@ import {
   DialogTitle,
   Link,
   TextField,
+  Typography,
   Box,
   Container,
+  Grid,
+  Paper,
 } from "@mui/material";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Authenticate } from "../../Utils/WebAuthnUtils";
 import {
@@ -26,6 +29,11 @@ function LoginPage() {
   const { dispatchUserEvent } = useContext(AppContext);
   const [showError, setShowError] = useState(null);
   const [showTrustDevice, setShowTrustDevice] = useState(false);
+  const [collapse, setCollapse] = useState(false);
+
+  useEffect(() => {
+    setCollapse(true);
+  }, []);
 
   const handleLogIn = async (e) => {
     e.preventDefault();
@@ -76,87 +84,71 @@ function LoginPage() {
   };
 
   return (
-    <div>
-      <Container component="main" maxWidth="xs" sx={{ mt: 2 }}>
-        <Collapse in={showError !== null}>
-          <Alert severity="error">{showError}</Alert>
-        </Collapse>
-
-        <Box component="form" onSubmit={handleLogIn} sx={{ mt: 2 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            key="email"
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            key="username"
-            name="username"
-            label="Username"
-            type="username"
-            id="username"
-            autoComplete="username"
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            key="name"
-            name="name"
-            label="Full name"
-            type="name"
-            id="name"
-            autoComplete="name"
-          />
-          <Button
-            type="submit"
-            key="log_in"
-            fullWidth
-            variant="contained"
-            sx={{ mb: 1 }}
-          >
-            Log In
-          </Button>
-
-          <Link
-            variant="body2"
-            color="secondary"
-            onClick={handleLostAuthenticator}
-          >
-            Lost your key?
-          </Link>
-
-          <Dialog
-            open={showTrustDevice}
-            onClose={handleDoNotTrustDevice}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-              {"Trust this device?"}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Trusting this device means anyone with access to it could also
-                gain access to your account.
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleDoNotTrustDevice} autoFocus>
-                Do not trust
+    <div className="CenterForm">
+      <Container maxWidth="xs">
+        <Collapse in={collapse}>
+          <Paper elevation={12} sx={{ px: 2, py: 6, mx: 1 }}>
+            <Collapse in={showError !== null}>
+              <Alert severity="error">{showError}</Alert>
+            </Collapse>
+            <Typography variant="h4" color="primary">
+              Login
+            </Typography>
+            <Box component="form" onSubmit={handleLogIn} sx={{ mt: 4 }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                key="email"
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+              <Button
+                type="submit"
+                key="log_in"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 0.5, mb: 2 }}
+              >
+                Log In
               </Button>
-              <Button onClick={handleTrustDevice}>Trust</Button>
-            </DialogActions>
-          </Dialog>
-        </Box>
+
+              <Link
+                variant="body2"
+                color="secondary"
+                onClick={handleLostAuthenticator}
+              >
+                Lost your key?
+              </Link>
+
+              <Dialog
+                open={showTrustDevice}
+                onClose={handleDoNotTrustDevice}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+                <DialogTitle id="alert-dialog-title">
+                  {"Trust this device?"}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-description">
+                    Trusting this device means anyone with access to it could
+                    also gain access to your account.
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleDoNotTrustDevice} autoFocus>
+                    Do not trust
+                  </Button>
+                  <Button onClick={handleTrustDevice}>Trust</Button>
+                </DialogActions>
+              </Dialog>
+            </Box>
+          </Paper>
+        </Collapse>
       </Container>
     </div>
   );

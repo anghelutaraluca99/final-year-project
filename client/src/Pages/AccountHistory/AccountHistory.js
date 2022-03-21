@@ -51,12 +51,20 @@ function AccountHistoryPage() {
 
   return (
     <div className={classes.root}>
-      <Container component="main" maxWidth="xs" sx={{ mt: 2 }}>
-        <Typography variant="h5"> Account History </Typography>
+      <Container sx={{ mt: 4 }}>
+        <Typography variant="h4" color="primary" sx={{ mt: 2 }}>
+          {" "}
+          Account History{" "}
+        </Typography>
         {user && fingerprints && (
           <Box sx={{ width: "100%", mt: 2 }}>
-            <List dense>
-              <Grid container spacing={2}>
+            <Grid
+              container
+              alignItems="center"
+              justifyContent="center"
+              spacing={2}
+            >
+              <List dense>
                 {fingerprints.map((fingerprint) => (
                   <ListItem
                     xs={12}
@@ -85,7 +93,7 @@ function AccountHistoryPage() {
                       key={`ListItemText:${fingerprint.visitorId}`}
                       primary={"Fingerprint ID:" + fingerprint.visitorId}
                       secondary={
-                        "Last log in on: " +
+                        "Last log on: " +
                         new Date(fingerprint.lastUsed).toLocaleDateString() +
                         ", seen " +
                         fingerprint.times_observed +
@@ -94,8 +102,8 @@ function AccountHistoryPage() {
                     />
                   </ListItem>
                 ))}
-              </Grid>
-            </List>
+              </List>
+            </Grid>
           </Box>
         )}
         {!user && (

@@ -58,8 +58,8 @@ function Interaction() {
             justifyContent="center"
           >
             {scope_list.map((scope) => (
-              <Grid item xs={12}>
-                <ListItem>
+              <Grid item xs={12} key={"GridItem:" + scope}>
+                <ListItem key={"ListItem:" + scope}>
                   <ListItemText primary={scope} />
                 </ListItem>
               </Grid>

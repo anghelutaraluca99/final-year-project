@@ -5,8 +5,10 @@ import {
   TextField,
   Box,
   Container,
+  Typography,
+  Paper,
 } from "@mui/material";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GetFingerprint } from "../../Utils/FingerprintUtils";
 import { AccountRecovery } from "../../Utils/WebAuthnUtils";
@@ -16,6 +18,11 @@ function RecoverAccount() {
   const navigate = useNavigate();
   const { dispatchUserEvent } = useContext(AppContext);
   const [showError, setShowError] = useState(null);
+  const [collapse, setCollapse] = useState(false);
+
+  useEffect(() => {
+    setCollapse(true);
+  }, []);
 
   const handleRecoverAccount = async (e) => {
     e.preventDefault();
@@ -46,56 +53,64 @@ function RecoverAccount() {
   };
 
   return (
-    <div>
-      <Container component="main" maxWidth="xs" sx={{ mt: 2 }}>
-        <Collapse in={showError !== null}>
-          <Alert severity="error">{showError}</Alert>
+    <div className="CenterForm">
+      <Container maxWidth="xs">
+        <Collapse in={collapse}>
+          <Paper elevation={12} sx={{ px: 2, py: 6 }}>
+            <Collapse in={showError !== null}>
+              <Alert severity="error">{showError}</Alert>
+            </Collapse>
+            <Typography variant="h4" color="primary">
+              Account Recovery
+            </Typography>
+            <Box
+              component="form"
+              onSubmit={handleRecoverAccount}
+              sx={{ mt: 4 }}
+            >
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                key="email"
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="username"
+                label="Username"
+                type="username"
+                id="username"
+                autoComplete="username"
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="name"
+                label="Full name"
+                type="name"
+                id="name"
+                autoComplete="name"
+              />
+              <Button
+                type="submit"
+                key="register"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 0.5 }}
+              >
+                Recover
+              </Button>
+            </Box>
+          </Paper>
         </Collapse>
-
-        <Box component="form" onSubmit={handleRecoverAccount} sx={{ mt: 2 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            key="email"
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            key="username"
-            name="username"
-            label="Username"
-            type="username"
-            id="username"
-            autoComplete="username"
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            key="name"
-            name="name"
-            label="Full name"
-            type="name"
-            id="name"
-            autoComplete="name"
-          />
-          <Button
-            type="submit"
-            key="log_in"
-            fullWidth
-            variant="contained"
-            sx={{ mb: 1 }}
-          >
-            Recover Account
-          </Button>
-        </Box>
       </Container>
     </div>
   );

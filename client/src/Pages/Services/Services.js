@@ -22,8 +22,10 @@ function ServicesPage() {
   };
 
   return (
-    <Container sx={{ mt: 2 }}>
-      <Typography variant="h5"> Services page </Typography>
+    <Container sx={{ mt: 4 }}>
+      <Typography variant="h4" color="primary">
+        Services
+      </Typography>
       {/* {user && (
         <Typography variant="subheading2"> Hello, {user.name}! </Typography>
       )}
@@ -34,11 +36,7 @@ function ServicesPage() {
           <Card>
             <CardActionArea onClick={() => redirectToDogsService()}>
               <CardContent>
-                <Typography
-                  sx={{ fontSize: 30 }}
-                  color="text.secondary"
-                  gutterBottom
-                >
+                <Typography sx={{ fontSize: 30 }} gutterBottom>
                   🐶
                 </Typography>
                 <Typography
@@ -57,11 +55,7 @@ function ServicesPage() {
           <Card>
             <CardActionArea onClick={() => redirectToCatsService()}>
               <CardContent>
-                <Typography
-                  sx={{ fontSize: 30 }}
-                  color="text.secondary"
-                  gutterBottom
-                >
+                <Typography sx={{ fontSize: 30 }} gutterBottom>
                   😺
                 </Typography>
                 <Typography

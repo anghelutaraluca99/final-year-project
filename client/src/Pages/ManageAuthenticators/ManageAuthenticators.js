@@ -145,7 +145,12 @@ function ManageAuthenticatorsPage() {
           <Alert severity="error">{showDeleteError}</Alert>
         </Collapse>
 
-        <Typography variant="h5" key="manage_authenticators" sx={{ mt: 2 }}>
+        <Typography
+          variant="h4"
+          color="primary"
+          key="manage_authenticators"
+          sx={{ mt: 2 }}
+        >
           Manage Authenticators
         </Typography>
         {/* List of authenticators */}
@@ -193,7 +198,7 @@ function ManageAuthenticatorsPage() {
                 key="delete_authenticator"
                 onClick={handleDeletion}
                 value="Delete Authenticator"
-                variant="outlined"
+                variant="contained"
                 sx={{ minWidth: { xs: "80%", md: "40%" } }}
               >
                 Delete authenticator

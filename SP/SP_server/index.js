@@ -56,7 +56,7 @@ app.use(cookieParser("secret"));
 
 Issuer.discover("http://localhost:3000/oidc").then((issuer) => {
   const oidcClient = new issuer.Client({
-    client_id: "DEMO client",
+    client_id: "Dogs As A Service",
     client_secret: "secret",
     redirect_uris: ["http://localhost:4000/"],
     response_types: ["code"],

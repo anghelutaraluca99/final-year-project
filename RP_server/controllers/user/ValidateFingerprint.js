@@ -28,13 +28,13 @@ module.exports = async (req, res) => {
       } else {
         // No record matched given fingerprint
         return res
-          .status(404)
+          .status(200)
           .send({ error: "Fingerprint could not be validated" });
       }
     } else {
       // No records are available
       return res
-        .status(404)
+        .status(200)
         .send({ error: "Fingerprint could not be validated" });
     }
   } catch (e) {

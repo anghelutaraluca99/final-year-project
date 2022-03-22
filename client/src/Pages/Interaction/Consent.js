@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import {
+  Box,
   Button,
   Grid,
   List,
@@ -7,11 +8,19 @@ import {
   ListItemText,
   Container,
   Typography,
+  Collapse,
+  Paper,
 } from "@mui/material";
+import React, { useState, useEffect } from "react";
 
 function Interaction() {
-  const { uid, scope } = useParams();
+  const { uid, app, scope } = useParams();
   let scope_list = scope.split(" ").slice(1);
+  const [collapse, setCollapse] = useState(false);
+
+  useEffect(() => {
+    setCollapse(true);
+  }, []);
 
   const handleConsent = async (e) => {
     e.preventDefault();
@@ -40,36 +49,33 @@ function Interaction() {
   };
 
   return (
-    <div>
-      <Container sx={{ mt: 2 }}>
-        <Typography variant="h5" sx={{ mt: 2 }}>
-          {" "}
-          Single Sign-On Consent Page{" "}
-        </Typography>
-        <Typography variant="subheading2" sx={{ mt: 4 }}>
-          Allow application to gain access to the following data about you?
-        </Typography>
+    <div className="CenterForm">
+      <Container maxWidth="xs">
+        <Collapse in={collapse}>
+          <Paper elevation={12} sx={{ px: 2, py: 6, mx: 1 }}>
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="h4" color="primary">
+                {app} wants access to your FYP data
+              </Typography>
+            </Box>
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="subheading2">
+                This will share the following details with {app}:
+              </Typography>
+            </Box>
 
-        <List dense>
-          <Grid
-            container
-            direction="column"
-            alignItems="center"
-            justifyContent="center"
-          >
-            {scope_list.map((scope) => (
-              <Grid item xs={12} key={"GridItem:" + scope}>
-                <ListItem key={"ListItem:" + scope}>
-                  <ListItemText primary={scope} />
-                </ListItem>
-              </Grid>
-            ))}
-          </Grid>
-        </List>
-        <Button variant="contained" onClick={handleConsent} sx={{ mt: 2 }}>
-          {" "}
-          Give consent{" "}
-        </Button>
+            <Grid container direction="column" alignItems="center">
+              {scope_list.map((scope) => (
+                <Grid item xs={12} sx={{ mt: 0.5 }} key={"GridItem:" + scope}>
+                  <Typography variant="body2"> {scope} </Typography>
+                </Grid>
+              ))}
+            </Grid>
+            <Button variant="contained" onClick={handleConsent} sx={{ mt: 2 }}>
+              Allow
+            </Button>
+          </Paper>
+        </Collapse>
       </Container>
     </div>
   );

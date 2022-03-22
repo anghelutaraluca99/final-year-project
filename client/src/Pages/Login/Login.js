@@ -23,10 +23,11 @@ import {
   SaveFingerprint,
 } from "../../Utils/FingerprintUtils";
 import { AppContext } from "../App/context";
+import HomePage from "../Home/Home";
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { dispatchUserEvent } = useContext(AppContext);
+  const { user, dispatchUserEvent } = useContext(AppContext);
   const [showError, setShowError] = useState(null);
   const [showTrustDevice, setShowTrustDevice] = useState(false);
   const [collapse, setCollapse] = useState(false);
@@ -77,6 +78,10 @@ function LoginPage() {
     navigate("/");
   };
 
+  const handleRegister = () => {
+    navigate("/register");
+  };
+
   const clearAlerts = () => {
     setTimeout(() => {
       setShowError(null);
@@ -84,72 +89,95 @@ function LoginPage() {
   };
 
   return (
-    <div className="CenterForm">
-      <Container maxWidth="xs">
-        <Collapse in={collapse}>
-          <Paper elevation={12} sx={{ px: 2, py: 6, mx: 1 }}>
-            <Collapse in={showError !== null}>
-              <Alert severity="error">{showError}</Alert>
-            </Collapse>
-            <Typography variant="h4" color="primary">
-              Login
-            </Typography>
-            <Box component="form" onSubmit={handleLogIn} sx={{ mt: 4 }}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                key="email"
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-              />
-              <Button
-                type="submit"
-                key="log_in"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 0.5, mb: 2 }}
-              >
-                Log In
-              </Button>
-
-              <Link
-                variant="body2"
-                color="secondary"
-                onClick={handleLostAuthenticator}
-              >
-                Lost your key?
-              </Link>
-
-              <Dialog
-                open={showTrustDevice}
-                onClose={handleDoNotTrustDevice}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-              >
-                <DialogTitle id="alert-dialog-title">
-                  {"Trust this device?"}
-                </DialogTitle>
-                <DialogContent>
-                  <DialogContentText id="alert-dialog-description">
-                    Trusting this device means anyone with access to it could
-                    also gain access to your account.
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleDoNotTrustDevice} autoFocus>
-                    Do not trust
+    <div>
+      <>{user && <HomePage></HomePage>}</>
+      <div className="CenterForm">
+        <Container maxWidth="xs">
+          {!user && (
+            <Collapse in={collapse}>
+              <Paper elevation={12} sx={{ px: 2, py: 6, mx: 1 }}>
+                <Collapse in={showError !== null}>
+                  <Alert severity="error">{showError}</Alert>
+                </Collapse>
+                <Typography variant="h4" color="primary">
+                  Login
+                </Typography>
+                <Box component="form" onSubmit={handleLogIn} sx={{ mt: 4 }}>
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    key="email"
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                    autoFocus
+                  />
+                  <Button
+                    type="submit"
+                    key="log_in"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 0.5, mb: 2 }}
+                  >
+                    Log In
                   </Button>
-                  <Button onClick={handleTrustDevice}>Trust</Button>
-                </DialogActions>
-              </Dialog>
-            </Box>
-          </Paper>
-        </Collapse>
-      </Container>
+
+                  <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                      <Box display="flex" justifyContent="flex-start">
+                        <Link
+                          variant="body2"
+                          color="secondary"
+                          onClick={handleRegister}
+                        >
+                          Need an account?
+                        </Link>
+                      </Box>
+                    </Grid>
+
+                    <Grid item xs={6}>
+                      <Box display="flex" justifyContent="flex-end">
+                        <Link
+                          variant="body2"
+                          color="secondary"
+                          onClick={handleLostAuthenticator}
+                        >
+                          Lost your key?
+                        </Link>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Paper>
+            </Collapse>
+          )}
+
+          <Dialog
+            open={showTrustDevice}
+            onClose={handleDoNotTrustDevice}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Trust this device?"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Trusting this device means anyone with access to it could also
+                gain access to your account.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDoNotTrustDevice} autoFocus>
+                Do not trust
+              </Button>
+              <Button onClick={handleTrustDevice}>Trust</Button>
+            </DialogActions>
+          </Dialog>
+        </Container>
+      </div>
     </div>
   );
 }

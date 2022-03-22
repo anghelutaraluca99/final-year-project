@@ -5,7 +5,7 @@ module.exports = {
   // ... see /docs for available configuration
   clients: [
     {
-      client_id: "DEMO client",
+      client_id: "Dogs As A Service",
       client_secret: "secret",
       // application_type: 'web',
       redirect_uris: ["http://localhost:4001/", "http://localhost:4000/"],
@@ -16,7 +16,7 @@ module.exports = {
     },
 
     {
-      client_id: "Cats as a service",
+      client_id: "Cats As A Service",
       client_secret: "secret",
       // application_type: 'web',
       redirect_uris: ["http://localhost:5001/", "http://localhost:5000/"],

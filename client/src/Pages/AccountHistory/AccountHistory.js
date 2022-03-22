@@ -43,16 +43,18 @@ function AccountHistoryPage() {
 
   const parseFingerprints = async (data) => {
     let parsedData = await data.json();
-    setFingerprints(parsedData.fingerprints);
+    if (!parsedData.error) {
+      setFingerprints(parsedData.fingerprints);
 
-    let current_fingerprint = await GetFingerprint();
-    setCurrentFingerprint(current_fingerprint);
+      let current_fingerprint = await GetFingerprint();
+      setCurrentFingerprint(current_fingerprint);
+    }
   };
 
   return (
     <div className={classes.root}>
       <Container sx={{ mt: 4 }}>
-        <Typography variant="h4" color="primary" sx={{ mt: 2 }}>
+        <Typography variant="h4" color="primary" sx={{ mt: 2, mb: 2 }}>
           {" "}
           Account History{" "}
         </Typography>
@@ -105,6 +107,11 @@ function AccountHistoryPage() {
               </List>
             </Grid>
           </Box>
+        )}
+        {!fingerprints && (
+          <Typography>
+            No history of trusted browsers exists for this account.
+          </Typography>
         )}
         {!user && (
           <Typography variant="subheading2"> Please log in. </Typography>

@@ -12,7 +12,8 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
-  useMediaQuery,
+  Grid,
+  Link,
 } from "@mui/material";
 import React, { useContext, useState, useEffect } from "react";
 import { Register } from "../../Utils/WebAuthnUtils";
@@ -22,11 +23,12 @@ import {
   SaveFingerprint,
 } from "../../Utils/FingerprintUtils";
 import { AppContext } from "../App/context";
+import HomePage from "../Home/Home";
 
 function RegistrationPage() {
   const navigate = useNavigate();
 
-  const { dispatchUserEvent } = useContext(AppContext);
+  const { user, dispatchUserEvent } = useContext(AppContext);
   const [showError, setShowError] = useState(null);
   const [showTrustDevice, setShowTrustDevice] = useState(false);
   const [collapse, setCollapse] = useState(false);
@@ -75,6 +77,9 @@ function RegistrationPage() {
     setShowTrustDevice(false);
     navigate("/");
   };
+  const handleLogin = () => {
+    navigate("/login");
+  };
 
   const clearAlerts = () => {
     setTimeout(() => {
@@ -83,84 +88,103 @@ function RegistrationPage() {
   };
 
   return (
-    <div className="CenterForm">
-      <Container maxWidth="xs">
-        <Collapse in={collapse}>
-          <Paper elevation={12} sx={{ px: 2, py: 6 }}>
-            <Collapse in={showError !== null}>
-              <Alert severity="error">{showError}</Alert>
-            </Collapse>
-            <Typography variant="h4" color="primary">
-              Register
-            </Typography>
-            <Box component="form" onSubmit={handleRegister} sx={{ mt: 4 }}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                key="email"
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="username"
-                label="Username"
-                type="username"
-                id="username"
-                autoComplete="username"
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="name"
-                label="Full name"
-                type="name"
-                id="name"
-                autoComplete="name"
-              />
-              <Button
-                type="submit"
-                key="register"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 0.5 }}
-              >
-                Register
-              </Button>
-
-              <Dialog
-                open={showTrustDevice}
-                onClose={handleDoNotTrustDevice}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-              >
-                <DialogTitle id="alert-dialog-title">
-                  {"Trust this device?"}
-                </DialogTitle>
-                <DialogContent>
-                  <DialogContentText id="alert-dialog-description">
-                    Trusting this device means anyone with access to it could
-                    also gain access to your account.
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleDoNotTrustDevice} autoFocus>
-                    Do not trust
+    <div>
+      {user && <HomePage></HomePage>}
+      <div className="CenterForm">
+        <Container maxWidth="xs">
+          {!user && (
+            <Collapse in={collapse}>
+              <Paper elevation={12} sx={{ px: 2, py: 6 }}>
+                <Collapse in={showError !== null}>
+                  <Alert severity="error">{showError}</Alert>
+                </Collapse>
+                <Typography variant="h4" color="primary">
+                  Register
+                </Typography>
+                <Box component="form" onSubmit={handleRegister} sx={{ mt: 4 }}>
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    key="email"
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                    autoFocus
+                  />
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="username"
+                    label="Username"
+                    type="username"
+                    id="username"
+                    autoComplete="username"
+                  />
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="name"
+                    label="Full name"
+                    type="name"
+                    id="name"
+                    autoComplete="name"
+                  />
+                  <Button
+                    type="submit"
+                    key="register"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 0.5, mb: 1 }}
+                  >
+                    Register
                   </Button>
-                  <Button onClick={handleTrustDevice}>Trust</Button>
-                </DialogActions>
-              </Dialog>
-            </Box>
-          </Paper>
-        </Collapse>
-      </Container>
+
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      {/* <Box display="flex" justifyContent="flex-start"> */}
+                      <Link
+                        variant="body2"
+                        color="secondary"
+                        onClick={handleLogin}
+                      >
+                        Already have an account?
+                      </Link>
+                      {/* </Box> */}
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Paper>
+            </Collapse>
+          )}
+
+          <Dialog
+            open={showTrustDevice}
+            onClose={handleDoNotTrustDevice}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Trust this device?"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Trusting this device means anyone with access to it could also
+                gain access to your account.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDoNotTrustDevice} autoFocus>
+                Do not trust
+              </Button>
+              <Button onClick={handleTrustDevice}>Trust</Button>
+            </DialogActions>
+          </Dialog>
+        </Container>
+      </div>
     </div>
   );
 }

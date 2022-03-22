@@ -17,6 +17,7 @@ import { AppContext } from "../App/context";
 function OIDC_Login() {
   const navigate = useNavigate();
   let { uid } = useParams();
+  let { app } = useParams();
   const [showError, setShowError] = useState(null);
   const { dispatchUserEvent } = useContext(AppContext);
   const [collapse, setCollapse] = useState(false);
@@ -55,7 +56,12 @@ function OIDC_Login() {
       const parsed_new_uid = resp.uid;
       const parsed_scope = resp.scope;
       navigate(
-        "/oidc_interaction/" + parsed_new_uid + "/consent/" + parsed_scope
+        "/oidc_interaction/" +
+          parsed_new_uid +
+          "/" +
+          app +
+          "/consent/" +
+          parsed_scope
       );
     } else {
       setShowError(authentication_successful?.error);

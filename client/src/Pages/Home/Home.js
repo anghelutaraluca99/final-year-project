@@ -1,12 +1,20 @@
 import React from "react";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AppContext } from "../App/context";
 import { Typography, Container } from "@mui/material";
 import ServicesPage from "../Services/Services";
-import LoginPage from "../Login/Login";
+import { useNavigate } from "react-router-dom";
 
 function HomePage() {
   const { user } = useContext(AppContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      console.log("No user");
+      navigate("/login");
+    }
+  }, [user]);
 
   return (
     <>
@@ -24,8 +32,7 @@ function HomePage() {
           </Container>
         )}
       </Container>
-      {user && <ServicesPage />}
-      {!user && <LoginPage />}
+      <ServicesPage />
     </>
   );
 }

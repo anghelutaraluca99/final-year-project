@@ -16,6 +16,7 @@ import { AppContext } from "./context";
 import { useEffect, useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { myTheme } from "./AppMuiTheme";
+import NotFoundPage from "../NotFound/NotFound";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -23,8 +24,6 @@ function App() {
   const dispatchUserEvent = (actionType, payload) => {
     switch (actionType) {
       case "SET_USER":
-        console.log("SET_USER");
-        console.log(payload);
         setUser(payload);
         window.localStorage.setItem("user", JSON.stringify(payload));
         return;
@@ -56,16 +55,14 @@ function App() {
               <Route exact path="/services" element={<ServicesPage />} />
               <Route
                 exact
-                path="/oidc_interaction/:uid/login"
+                path="/oidc_interaction/:uid/:app/login"
                 element={<OIDC_login />}
               />
               <Route
                 exact
-                path="/oidc_interaction/:uid/consent/:scope"
+                path="/oidc_interaction/:uid/:app/consent/:scope"
                 element={<OIDC_consent />}
               />
-
-              {/* Routes accessible only to users who are not logged in */}
               <Route exact path="/register" element={<RegistrationPage />} />
               <Route exact path="/login" element={<LoginPage />} />
               <Route
@@ -76,17 +73,23 @@ function App() {
               <Route exact path="/profile" element={<ProfilePage />} />
 
               {/* Routes accessible only to users who are logged in */}
-              <Route exact path="/logout" element={<LogoutPage />} />
-              <Route
-                exact
-                path="/account_history"
-                element={<AccountHistoryPage />}
-              />
-              <Route
-                exact
-                path="/manage_authenticators"
-                element={<ManageAuthenticatorsPage />}
-              />
+              {user && <Route exact path="/logout" element={<LogoutPage />} />}
+              {user && (
+                <Route
+                  exact
+                  path="/account_history"
+                  element={<AccountHistoryPage />}
+                />
+              )}
+              {user && (
+                <Route
+                  exact
+                  path="/manage_authenticators"
+                  element={<ManageAuthenticatorsPage />}
+                />
+              )}
+              {/* Handle unsupported pages */}
+              <Route exact path="*" element={<NotFoundPage />} />
             </Routes>
           </ThemeProvider>
         </AppContext.Provider>

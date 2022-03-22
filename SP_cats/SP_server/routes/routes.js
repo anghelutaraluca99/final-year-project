@@ -9,8 +9,6 @@ const {
 const { requireAuth } = require("../middlewares");
 
 router.get("/login", Login);
-router.get("/", Root);
-router.post("/access_token", ValidateToken);
 
 // Protect GetDogs and logout behind the requireAuth middleware
 router.use("/cats", requireAuth);

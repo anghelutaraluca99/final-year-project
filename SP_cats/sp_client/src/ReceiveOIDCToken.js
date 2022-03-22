@@ -28,7 +28,7 @@ function ReceiveOIDCToken() {
   });
 
   const validate_token = async () => {
-    const res = await fetch("http://localhost:5000/access_token", {
+    const res = await fetch("http://localhost:5000/oidc/access_token", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

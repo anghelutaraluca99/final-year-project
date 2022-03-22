@@ -58,7 +58,7 @@ Issuer.discover("http://localhost:3000/oidc").then((issuer) => {
   const oidcClient = new issuer.Client({
     client_id: "Dogs As A Service",
     client_secret: "secret",
-    redirect_uris: ["http://localhost:4000/"],
+    redirect_uris: ["http://localhost:4000/oidc"],
     response_types: ["code"],
   });
   global.oidcClient = oidcClient;
@@ -68,16 +68,3 @@ Issuer.discover("http://localhost:3000/oidc").then((issuer) => {
 app.use("/", router);
 
 app.listen(PORT, () => console.log(`Server live at http://localhost:${PORT}`));
-
-// Connection to database
-// mongoose.connect(process.env.DB_URI, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-// }).then(() => {
-//     console.log(`Connected to database.`);
-// Start listening
-// app.listen(
-//     PORT,
-//     () => console.log(`Server live at http://localhost:${PORT}`)
-// );
-// });

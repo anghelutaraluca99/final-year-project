@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
 
   try {
     tokenSet = await global.oidcClient.callback(
-      "http://localhost:5000/",
+      "http://localhost:5000/oidc",
       params,
       { code_verifier }
     ); // to get access token and id token

@@ -60,6 +60,10 @@ module.exports = {
     devInteractions: { enabled: false },
   },
 
+  ttl: {
+    Session: 30,
+  },
+
   async findAccount(ctx, id) {
     let user;
     try {
